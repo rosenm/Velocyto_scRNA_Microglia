@@ -1,0 +1,353 @@
+---
+title: "velocyto"
+author: "Mikaela Rosen"
+date: "6/29/2021"
+output: 
+  rmarkdown::html_document:
+   theme: cerulean
+   highlight: haddock
+   code_folding: show
+   toc: true
+   toc_float: true
+   smooth_scroll: true
+   number_sections: false
+   self_contained: true 
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pre-processing of the Data to create a Loom File  
+
+In order to calculate RNA Velocity using Velocyto, you first need to produce a **Loom file**. This file can be made in two different ways, described [here](https://github.com/basilkhuder/Seurat-to-RNA-Velocity#kallisto-bustools) and briefly summarized below.
+
+Before using either tool on Minerva, the anaconda environment must be created as follows. 
+
+```{bash, eval=FALSE, engine="sh"}
+# Create the anaconda environment
+ml anaconda3/2020.11; CONDA_BASE=$(conda info --base); source $CONDA_BASE/etc/profile.d/conda.sh; ml purge
+
+# Run this line only once for initial setup
+mamba create -n velocyto_env velocyto.py bustools kallisto kb-python
+
+# Activate anaconda environment to use
+conda activate velocyto_env
+
+# Deactivate environment when finished
+conda deactivate
+```
+
+### 1) Using Velocyto.py
+
+This is a Python implementation of Velocyto. The entire Velocyto analysis pipeline can be run using this Python tool. Importantly, the pre-processing (aka the creation of the loom file) can only be run in the Python and not in the R. This method requires, at minimum, a Binary Alignment Map (BAM) file for your data and a Gene Transfer Format (GTF) gene annotation file. See [Velocyto's Python documentation](http://velocyto.org/velocyto.py/tutorial/cli.html#run-run-on-any-technique-advanced-use) for more details.
+
+Here is an example of the command to create the loom file from BAM files made using any sequencing technique and GTF file downloaded from [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references).  
+
+```{bash, eval=FALSE, engine="sh"}
+# Run velocyto.py using its generic 'run' command with the bare minimum inputs
+velocyto run -o out -v /hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/sc_bams_myndad/possorted_genome_bam_P1.bam /hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/gtf_annotation/refdata-gex-GRCh38-2020-A/genes/genes.gtf
+
+```
+
+Note: It is cited that typical use of this command takes ~3h and this time varies based on sequencing depth and CPU power. On Minerva, the process was not finished by the 3h mark. Because of this, we used the alternative method described next. 
+
+### 2) Using Kallisto
+
+In Kallisto, use the *kb* function. First, either build or download (as shown here) a reference file. To make reference files you'll need FASTA and GTF files. Second, generate a counts table which can be output as a loom file. See [Kallisto|Bustools documentation](https://www.kallistobus.tools/index.html) for additional details.
+```{bash,  eval=FALSE, engine="sh"}
+# Download the index files of Kallisto
+kb ref -d linnarsson -i index.idx -g t2g.txt -c1 spliced_t2c.txt -c2 unspliced_t2c.txt
+
+# Generate the Loom file
+# (example submits to a computing node)
+## x specifies single-cell technology
+## --lamanno specifies we want to calculate RNA velocity
+echo "kb count -t 20 --loom -i index.idx -g t2g.txt -x 10xv3 -o mic_sc \
+-c1 spliced_t2c.txt -c2 unspliced_t2c.txt --workflow lamanno --filter bustools \
+/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-HIPP/MG-22-HIPP_S1_L001_R1_001.fastq.gz \
+/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-HIPP/MG-22-HIPP_S1_L001_R2_001.fastq.gz \
+/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-MFG/MG-22-MFG_S1_L001_R1_001.fastq.gz \
+/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-MFG/MG-22-MFG_S1_L001_R2_001.fastq.gz" | bsub -n 20 -R "rusage[mem=2000]" -R "span[hosts=1]" -W 12:00 -oo kb.out -eo kb.err -P acc_ad-omics -q express -J kb 
+
+```
+
+## Understanding the Loom File
+
+The [Linnarson lab](http://linnarssonlab.org/loompy/index.html) developed **loom**, an HDF5-based data structure, to easily store single cell  datasets and metadata. The Satija lab created the *loomR* package in response to allow for analysis of loom files using the Seurat pipeline.  Their [tutorial](https://satijalab.org/loomr/loomr_tutorial) is very helpful to learn about the structure of a loom file and how to work with it. Similarly, here I explore loom files using our data. 
+
+A **loom** object is a container for six sub-objects: one dataset five groups. The general sub-objects include the following:
+
+* Matrix - with two dimensions of n genes and m cells
+* Layers - alternative representations of the data with the same dimensions as the original data
+* row_attrs and col_attrs - row and column names
+* row_graphs and col_graphs - row and column graphs
+
+Again, see the [tutorial](https://satijalab.org/loomr/loomr_tutorial) for more information about official *loom* objects. 
+
+```{r Setup}
+
+# remotes::install_github("lambdamoses/BUStoolsR")
+library(BUSpaRse)
+library(Seurat)
+library(SeuratWrappers)
+library(velocyto.R)
+library(ggplot2)
+
+# Create path to loom files created in pre-processing 
+d <- "kallisto_res/mic_sc/counts_filtered"
+
+# Read in the loom file
+ldat <- read_velocity_output(spliced_dir = d, spliced_name = "spliced", unspliced_dir = d, unspliced_name = "unspliced")
+
+# View summary information about our data
+summary(ldat)
+str(ldat)
+
+```
+
+As you can see, in our data we have two *dgCMatrix* objects as our *'loom'* object. One of these objects holds the spliced and the other the unspliced data. This type of object is specifically designed to hold sparse numeric matrices in the compressed, sparse, column-oriented format. It follows a slightly different format, although the general components are similar to those of loom files - crucially they both hold a matrix and details about rows/columns.
+
+Within each *dgCMatrix* object are particular slots:
+
+* i - holds the row index of the non-zero elements
+    + ex: the k^th^ index of slot i holds the row index for the k^th^ non-zero element in the object
+* p - holds the cumulative number of non-zero elements as we move from one column to the next column, left to right
+    + its length is equal to [ncols(matrix) + 1] and the first value is always 0
+    + ex: the j^th^ index of slot p holds the the number of non-zero elements in columns 0 to j-1 (inclusive)
+    + note: since p is a cumulative sum, we can use diff() to get the number of non-zero entries in each column
+* x - holds the non-zero elements in the data sorted column-wise (top to bottom, left to right)
+    + ex: all non-zero entries in column 1 are followed by those in column 2
+* Dim and Dimnames - denotes the number and names (respectively) of the rows and columns 
+* factors - a list of factorizations of the matrix 
+    + typically empty and is updated automatically whenever a matrix factorization is computed
+
+To learn more about *dgCMatrix* objects and the slots within them check out this [blog](https://www.r-bloggers.com/2020/03/what-is-a-dgcmatrix-object-made-of-sparse-matrix-format-in-r/) and this [sparse matrix tutorial](https://slowkow.com/notes/sparse-matrix/). 
+
+```{r, Accessing Loom Object}
+
+# View the `matrix` dataset with the double subset [[ operator or using $ sign
+## our matrix are called spliced or unspliced
+   #ldat[["spliced"]] not run
+   #ldat$spliced
+
+# Access specific parts of the data using indexing
+ldat[["spliced"]][1:5, 1:5]
+
+```
+
+## Calculating RNA Velocity using Velocyto and the Seurat Pipeline
+
+Our analysis followed the steps outlined in a Satija Lab [vignette](https://github.com/satijalab/seurat-wrappers/blob/master/docs/velocity.md) which illustrates how to estimate RNA velocity using Seurat objects.  
+
+```{r Running Velocyto, fig.width=8, fig.height=4, dpi=300}
+
+#why was this done? 
+emat <- ldat$spliced
+nmat <- ldat$unspliced
+
+# Use Seurat functions to complete the analysis 
+bm <- as.Seurat(x = ldat) #convert loom data to seurat
+class(bm)
+summary(bm)
+str(bm)
+
+# Any additional steps of analysis get tagged onto your Seurat object
+bm <- SCTransform(object = bm, assay = "spliced")
+bm <- RunPCA(object = bm, verbose = FALSE) #stored under reductions
+bm <- FindNeighbors(object = bm, dims = 1:20) #stored under graphs
+bm <- FindClusters(object = bm)
+bm <- RunUMAP(object = bm, dims = 1:20)
+bm <- RunVelocity(object = bm, deltaT = 1, kCells = 25, fit.quantile = 0.02) #note to self: go back and check parameters for this
+
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm)))
+names(x = ident.colors) <- levels(x = bm)
+cell.colors <- ident.colors[Idents(object = bm)]
+names(x = cell.colors) <- colnames(x = bm)
+
+#pdf("microglia_velocyto_plot.pdf", width = 9, height = 9)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm, reduction = "umap"), vel = Tool(object = bm, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 0.8, arrow.scale = 3, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 1, 
+    do.par = FALSE, cell.border.alpha = 0.1)
+#dev.off()
+
+```
+
+### Feature Plots 
+
+In order to assess the clustering and velocity results, we observe the expression levels of previously identified features. These help us hypothesize which clusters are particular cell types. In this case, I visualized genes that were more highly expressed in homeostatic microglia and those more highly expressed in monocytes (according to prior analysis by previous rotation student Emily Kozik). 
+
+The data is labeled with EnsemblID gene names rather than gene symbols. If you change those labels before making your Seurat object, you should not run into this issue. However, EnsemblID gene names and gene symbols often do not match at a 1:1 rate, so re-labeling them will likely lose information. The other option, which is used here, is to analyze using the EnsemblID names and then change the labels on output plots and tables to be gene symbols. 
+
+```{r Feature Plots, fig.width=8, fig.height=4, dpi=300}
+
+#Feature Plots
+library(ggpubr)
+
+#function to make multipannel feature plot
+make_featurePlot <- function(ensembles, names) {
+  #create list object to hold plots
+  plot_list = vector(mode = "list", length = length(ensembles))
+  
+  #initialize index
+  index = 1
+  for (gene in ensembles) {
+    #make feature plot with labels
+    featurePlot_func <- FeaturePlot(bm, features = gene, reduction = 'umap',
+                                    max.cutoff = 2, cols = c("lightgrey", "darkblue"), 
+                                    ncol = 2)
+    #this line is required to re-label the data with gene names instead of their ensembleIDs
+    featurePlot_func = featurePlot_func + labs(title = names[index])
+    
+    #add plot to list
+    plot_list[[index]] = featurePlot_func
+    
+    index = index + 1
+  }
+  
+  #merge them using ggarrange
+  arranged = ggarrange(plotlist = plot_list)
+  
+  #return
+  return(arranged)
+}
+
+#Homeostatic Gene Set
+title = "Homeostatic Gene Set"
+ensemb = c("ENSG00000168329.13", "ENSG00000171659.15", "ENSG00000169313.9", "ENSG00000181631.7")
+names = c("CX3CR1", "GPR34", "P2RY12", "P2RY13")
+figure_homeo = make_featurePlot(ensemb, names)
+
+#annotate the figure
+annotate_figure(figure_homeo, top = text_grob(title,
+                                        color = "black",
+                                        face = "bold",
+                                        size = 16)
+)
+
+#other (ie monocyte markers)
+title = "Monocyte Gene Set"
+ensemb = c("ENSG00000204472.13", "ENSG00000173372.17", "ENSG00000011600.11")
+names = c("AIF1","C1QA","TYROBP")
+figure_other = make_featurePlot(ensemb, names)
+figure_other
+
+#annotate the figure
+annotate_figure(figure_other, top = text_grob(title,
+                                        color = "black",
+                                        face = "bold",
+                                        size = 16)
+)
+
+
+#save.image(file = paste("/hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/microglia_velocyto.RData", sep = ""))
+#load(paste("/hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/microglia_velocyto.RData", sep = ""))
+
+```
+
+The clustering results found in our initial analysis was not too similar to what was found in previous analyses. Adjusting the analysis so that it more closely resembles the previous analysis may lead to more comparable results. 
+
+## Exploring Parameters 
+
+Several steps were changed in order to make the previous and current analyses more similar.
+
+```{r New Parameters}
+
+# Use Seurat functions to complete the analysis 
+bm_2 <- as.Seurat(x = ldat) #convert loom data to seurat
+class(bm_2)
+summary(bm_2)
+str(bm_2)
+
+```
+
+### Normalization and Scaling
+
+The normalization technique was changed from SCTransform to LogNormalization. This means using log normalization followed by scaling the data based on variable features. This normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor, and log-transforms the result. The scaling then shifts the expression of each gene so that the mean expression across cells is 0 and scales the expression of each gene so that the variance across cells is 1, giving equal weight to genes in downstream analyses so that highly-expressed genes do not dominate.
+
+```{r Normalization and Scaling}
+
+bm_2 <- NormalizeData(bm_2, normalization.method = "LogNormalize", scale.factor = 10000)
+bm_2 <- FindVariableFeatures(bm_2, selection.method = "vst", nfeatures = 2000) #need to do this to run PCA
+all.genes_bm_2 <- rownames(bm_2) 
+bm_2 <- ScaleData(bm_2, features = all.genes_bm_2) #,vars.to.regress = c("percent.mt","nCount_RNA") do I have access to this info? 
+
+```
+
+### PCA 
+The PCA parameters were changed to explicitly use variable features. The default behavior of PCA runs using the variable features for the Assay. Using the SCTransform method, I did not have to explicitly specify the variable features. When using LogNormalization and scaling, I was prompted to specify variable features for this command. 
+
+```{r PCA}
+
+bm_2 <- RunPCA(object = bm_2, features = VariableFeatures(bm_2), verbose = FALSE)
+
+```
+
+### FindNeighbors and FindClusters
+
+FindNeighbors was changed to run on default parameters.  
+
+The resolution was changed to 0.1 for FindClusters, which parallels previous analysis and should results in a smaller number of communities. A resolution parameter value above 1.0 obtains a larger number of communities and below obtains smaller number of communities or clusters.
+
+```{r Neighbors and Clusters}
+
+bm_2 <- FindNeighbors(object = bm_2) #default is dim = 1:10
+bm_2 <- FindClusters(object = bm_2, resolution = 0.1) #default is resolution = 0.8
+
+```
+
+### UMAP
+
+An elbow plot was created to evaluate how many PCs are needed to capture the majority of variation in the data. The elbow is vaguely defined as where the plot angles to flatten horizontally, suggesting a drop-off in standard deviation and our threshold. Obviously, this is a very qualitative measure and other methods can be used to qualitatively create a threshold. Based on our plot, it seemed most variation is accounted for by PCs 1 to 13. Therefore, RunUMAP was changed to use the first 13 PCs.
+
+```{r UMAP, fig.width=8, fig.height=4, dpi=300}
+
+#check for # of PCs to use in UMAP 
+ElbowPlot(bm_2)
+
+bm_2 <- RunUMAP(object = bm_2, dims = 1:13) #default is 1:5
+
+#check what the UMAP looks like 
+DimPlot(bm_2, reduction = 'umap')
+
+```
+
+### Velocity
+
+The [RunVelocity command](https://rdrr.io/github/satijalab/seurat-wrappers/man/RunVelocity.html) requires an object with information on the spliced and unspliced reads. You can also specify which reduction method the command should use, with the default being PCA. 
+
+Excluding the main parameters, there are [additional parameters the function can take](https://github.com/velocyto-team/velocyto.R/blob/master/R/momentum_routines.R) in. Most notably:
+
+* deltaT - the amount of time to project the cell forward; default = 1
+* kCells - number of k nearest neighbors (NN) to use in slope calculation smoothing; default = 10
+* fit.quantile - perform gamma fit on a [fit.quantile]% of top/bottom quantiles of expression magnitudes
+    * recommended to do if can afford to do kNN smoothing
+    * ex: 0.02 means top/bottom 2% expression quantiles
+
+```{r Velocity with New Parameters, fig.width=8, fig.height=4, dpi=300}
+
+bm_2 <- RunVelocity(object = bm_2, deltaT = 1, kCells = 25, fit.quantile = 0.02) #note to self: go back and check parameters for this
+
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm_2)))
+names(x = ident.colors) <- levels(x = bm_2)
+cell.colors <- ident.colors[Idents(object = bm_2)]
+names(x = cell.colors) <- colnames(x = bm_2)
+
+#pdf("microglia_velocyto_newParams_plot.pdf", width = 9, height = 9)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm_2, reduction = "umap"), vel = Tool(object = bm_2, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 0.8, arrow.scale = 3, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 1, 
+    do.par = FALSE, cell.border.alpha = 0.1)
+#dev.off()
+
+```
+
+## Merging with Previously Created Seurat Object
+
+```{r, eval=FALSE}
+
+```
+
