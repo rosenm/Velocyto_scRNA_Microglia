@@ -4,14 +4,14 @@ author: "Mikaela Rosen"
 date: "6/29/2021"
 output: 
   rmarkdown::html_document:
-   theme: cerulean
+   theme: sandstone
    highlight: haddock
    code_folding: show
    toc: true
    toc_float: true
    smooth_scroll: true
    number_sections: false
-   self_contained: true 
+   self_contained: false 
 editor_options:
   chunk_output_type: console
 ---
@@ -22,11 +22,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Pre-processing of the Data to create a Loom File  
 
-In order to calculate RNA Velocity using Velocyto, you first need to produce a **Loom file**. This file can be made in two different ways, described [here](https://github.com/basilkhuder/Seurat-to-RNA-Velocity#kallisto-bustools) and briefly summarized below.
+In order to calculate RNA Velocity using Velocyto, you first need to produce a **Loom file**. This file can be made in two (most common) different ways, described [here](https://github.com/basilkhuder/Seurat-to-RNA-Velocity#kallisto-bustools) and briefly summarized below.
 
 Before using either tool on Minerva, the anaconda environment must be created as follows. 
 
-```{bash, eval=FALSE, engine="sh"}
+```{bash Conda Environment, eval=FALSE, engine="sh"}
 # Create the anaconda environment
 ml anaconda3/2020.11; CONDA_BASE=$(conda info --base); source $CONDA_BASE/etc/profile.d/conda.sh; ml purge
 
@@ -46,7 +46,7 @@ This is a Python implementation of Velocyto. The entire Velocyto analysis pipeli
 
 Here is an example of the command to create the loom file from BAM files made using any sequencing technique and GTF file downloaded from [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references).  
 
-```{bash, eval=FALSE, engine="sh"}
+```{bash Velocyto.py, eval=FALSE, engine="sh"}
 # Run velocyto.py using its generic 'run' command with the bare minimum inputs
 velocyto run -o out -v /hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/sc_bams_myndad/possorted_genome_bam_P1.bam /hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/gtf_annotation/refdata-gex-GRCh38-2020-A/genes/genes.gtf
 
@@ -57,7 +57,7 @@ Note: It is cited that typical use of this command takes ~3h and this time varie
 ### 2) Using Kallisto
 
 In Kallisto, use the *kb* function. First, either build or download (as shown here) a reference file. To make reference files you'll need FASTA and GTF files. Second, generate a counts table which can be output as a loom file. See [Kallisto|Bustools documentation](https://www.kallistobus.tools/index.html) for additional details.
-```{bash,  eval=FALSE, engine="sh"}
+```{bash Kallisto, eval=FALSE, engine="sh"}
 # Download the index files of Kallisto
 kb ref -d linnarsson -i index.idx -g t2g.txt -c1 spliced_t2c.txt -c2 unspliced_t2c.txt
 
@@ -74,6 +74,20 @@ echo "kb count -t 20 --loom -i index.idx -g t2g.txt -x 10xv3 -o mic_sc \
 
 ```
 
+Of note, there are other manual alterations you can make when using the kallisto|bustools workflow, including specifying flags such that you can work with UMI barcoded data. See this useful [kallisto|bustools tutorial](https://bustools.github.io/BUS_notebooks_R/velocity.html) for more details - look specifically at the bustools capture method.
+
+### Assessment of Processing Methods
+
+A [recent publication](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008585) compared the tools available to quantify the spliced and unspliced RNA and found that the tool selection can have considerable effects on both the RNA velocity estimates and the biological interpretation. These tools include *velocyto.py*, *kallisto|bustools*, STARsolo, dropEst and alevin. However, it is important to note that the authors used scVelo and not Velocyto to calculate their velocities. 
+
+The 'best' available methods based on their work are summarized in Table 4 of their work. They classified methods based on their 
+
+* agreement with expected velocity fields for each experimental study used in the work
+* whether or not the method was strand aware
+* its ability to count multigene reads
+
+Notably, among the methods with the most agreement with expected velocity fields was what they referred to as the kallisto|bus_sep_excl. This means the kallisto|bustools method which uses the ‘separate’ intron definition and the ‘exclude’ capture approach (the default settings when using the kb-python wrapper). This is the same method that was used and described here. 
+
 ## Understanding the Loom File
 
 The [Linnarson lab](http://linnarssonlab.org/loompy/index.html) developed **loom**, an HDF5-based data structure, to easily store single cell  datasets and metadata. The Satija lab created the *loomR* package in response to allow for analysis of loom files using the Seurat pipeline.  Their [tutorial](https://satijalab.org/loomr/loomr_tutorial) is very helpful to learn about the structure of a loom file and how to work with it. Similarly, here I explore loom files using our data. 
@@ -87,6 +101,12 @@ A **loom** object is a container for six sub-objects: one dataset five groups. T
 
 Again, see the [tutorial](https://satijalab.org/loomr/loomr_tutorial) for more information about official *loom* objects. 
 
+```{r Read in Rdata file 1}
+#read in the first rdata file which has the objects made in chunks 7 and 10
+load("velocytoRun1_scT.RData")
+
+```
+
 ```{r Setup}
 
 # remotes::install_github("lambdamoses/BUStoolsR")
@@ -96,16 +116,14 @@ library(SeuratWrappers)
 library(velocyto.R)
 library(ggplot2)
 
+```
+
+```{r Read Loom File, eval=FALSE}
 # Create path to loom files created in pre-processing 
 d <- "kallisto_res/mic_sc/counts_filtered"
 
 # Read in the loom file
 ldat <- read_velocity_output(spliced_dir = d, spliced_name = "spliced", unspliced_dir = d, unspliced_name = "unspliced")
-
-# View summary information about our data
-summary(ldat)
-str(ldat)
-
 ```
 
 As you can see, in our data we have two *dgCMatrix* objects as our *'loom'* object. One of these objects holds the spliced and the other the unspliced data. This type of object is specifically designed to hold sparse numeric matrices in the compressed, sparse, column-oriented format. It follows a slightly different format, although the general components are similar to those of loom files - crucially they both hold a matrix and details about rows/columns.
@@ -126,7 +144,11 @@ Within each *dgCMatrix* object are particular slots:
 
 To learn more about *dgCMatrix* objects and the slots within them check out this [blog](https://www.r-bloggers.com/2020/03/what-is-a-dgcmatrix-object-made-of-sparse-matrix-format-in-r/) and this [sparse matrix tutorial](https://slowkow.com/notes/sparse-matrix/). 
 
-```{r, Accessing Loom Object}
+```{r Accessing Loom Object}
+
+# View summary information about our data
+summary(ldat)
+str(ldat)
 
 # View the `matrix` dataset with the double subset [[ operator or using $ sign
 ## our matrix are called spliced or unspliced
@@ -142,17 +164,16 @@ ldat[["spliced"]][1:5, 1:5]
 
 Our analysis followed the steps outlined in a Satija Lab [vignette](https://github.com/satijalab/seurat-wrappers/blob/master/docs/velocity.md) which illustrates how to estimate RNA velocity using Seurat objects.  
 
-```{r Running Velocyto, fig.width=8, fig.height=4, dpi=300}
-
-#why was this done? 
-emat <- ldat$spliced
-nmat <- ldat$unspliced
-
-# Use Seurat functions to complete the analysis 
-bm <- as.Seurat(x = ldat) #convert loom data to seurat
+```{r Summarize Obj1}
 class(bm)
 summary(bm)
 str(bm)
+```
+
+```{r Preparing and Running Velocyto, eval= FALSE, warning=FALSE}
+
+# Use Seurat functions to complete the analysis 
+bm <- as.Seurat(x = ldat) #convert loom data to seurat
 
 # Any additional steps of analysis get tagged onto your Seurat object
 bm <- SCTransform(object = bm, assay = "spliced")
@@ -160,7 +181,11 @@ bm <- RunPCA(object = bm, verbose = FALSE) #stored under reductions
 bm <- FindNeighbors(object = bm, dims = 1:20) #stored under graphs
 bm <- FindClusters(object = bm)
 bm <- RunUMAP(object = bm, dims = 1:20)
-bm <- RunVelocity(object = bm, deltaT = 1, kCells = 25, fit.quantile = 0.02) #note to self: go back and check parameters for this
+bm <- RunVelocity(object = bm, deltaT = 1, kCells = 25, fit.quantile = 0.02)
+
+```
+
+```{r Plot of Velocity for Obj1, fig.width=8, fig.height=8, dpi=300}
 
 ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm)))
 names(x = ident.colors) <- levels(x = bm)
@@ -182,7 +207,7 @@ In order to assess the clustering and velocity results, we observe the expressio
 
 The data is labeled with EnsemblID gene names rather than gene symbols. If you change those labels before making your Seurat object, you should not run into this issue. However, EnsemblID gene names and gene symbols often do not match at a 1:1 rate, so re-labeling them will likely lose information. The other option, which is used here, is to analyze using the EnsemblID names and then change the labels on output plots and tables to be gene symbols. 
 
-```{r Feature Plots, fig.width=8, fig.height=4, dpi=300}
+```{r Feature Plots, fig.width=8, fig.height=6, dpi=300}
 
 #Feature Plots
 library(ggpubr)
@@ -233,7 +258,6 @@ title = "Monocyte Gene Set"
 ensemb = c("ENSG00000204472.13", "ENSG00000173372.17", "ENSG00000011600.11")
 names = c("AIF1","C1QA","TYROBP")
 figure_other = make_featurePlot(ensemb, names)
-figure_other
 
 #annotate the figure
 annotate_figure(figure_other, top = text_grob(title,
@@ -241,7 +265,6 @@ annotate_figure(figure_other, top = text_grob(title,
                                         face = "bold",
                                         size = 16)
 )
-
 
 #save.image(file = paste("/hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/microglia_velocyto.RData", sep = ""))
 #load(paste("/hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/microglia_velocyto.RData", sep = ""))
@@ -254,21 +277,30 @@ The clustering results found in our initial analysis was not too similar to what
 
 Several steps were changed in order to make the previous and current analyses more similar.
 
-```{r New Parameters}
+```{r Read in Rdata file 2}
+#read in the second rdata file which has the objects made/edited in chunks 14 and 16-21
+load("velocytoRun2_log.RData") 
+
+```
+
+```{r New Parameters for Obj2, eval=FALSE}
 
 # Use Seurat functions to complete the analysis 
 bm_2 <- as.Seurat(x = ldat) #convert loom data to seurat
+
+```
+
+```{r Summarize Obj2}
 class(bm_2)
 summary(bm_2)
 str(bm_2)
-
 ```
 
 ### Normalization and Scaling
 
-The normalization technique was changed from SCTransform to LogNormalization. This means using log normalization followed by scaling the data based on variable features. This normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor, and log-transforms the result. The scaling then shifts the expression of each gene so that the mean expression across cells is 0 and scales the expression of each gene so that the variance across cells is 1, giving equal weight to genes in downstream analyses so that highly-expressed genes do not dominate.
+The normalization technique was changed from SCTransform to LogNormalization. This means using log normalization followed by scaling the data based on variable features. This normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor, and log-transforms the result. The scaling then shifts the expression of each gene so that the mean expression across cells is 0 and scales the expression of each gene so that the variance across cells is 1, giving equal weight to genes in downstream analyses so that highly-expressed genes do not dominate. Also, note that in previous analysis of this data, the scale command included a vars.to.regress parameter based on the percent.mt and nCount_RNA metadata information. Our current analysis does not have such metadata information included. 
 
-```{r Normalization and Scaling}
+```{r Normalization and Scaling, eval=FALSE}
 
 bm_2 <- NormalizeData(bm_2, normalization.method = "LogNormalize", scale.factor = 10000)
 bm_2 <- FindVariableFeatures(bm_2, selection.method = "vst", nfeatures = 2000) #need to do this to run PCA
@@ -280,7 +312,7 @@ bm_2 <- ScaleData(bm_2, features = all.genes_bm_2) #,vars.to.regress = c("percen
 ### PCA 
 The PCA parameters were changed to explicitly use variable features. The default behavior of PCA runs using the variable features for the Assay. Using the SCTransform method, I did not have to explicitly specify the variable features. When using LogNormalization and scaling, I was prompted to specify variable features for this command. 
 
-```{r PCA}
+```{r PCA, eval=FALSE}
 
 bm_2 <- RunPCA(object = bm_2, features = VariableFeatures(bm_2), verbose = FALSE)
 
@@ -292,7 +324,7 @@ FindNeighbors was changed to run on default parameters.
 
 The resolution was changed to 0.1 for FindClusters, which parallels previous analysis and should results in a smaller number of communities. A resolution parameter value above 1.0 obtains a larger number of communities and below obtains smaller number of communities or clusters.
 
-```{r Neighbors and Clusters}
+```{r Neighbors and Clusters, eval=FALSE}
 
 bm_2 <- FindNeighbors(object = bm_2) #default is dim = 1:10
 bm_2 <- FindClusters(object = bm_2, resolution = 0.1) #default is resolution = 0.8
@@ -303,12 +335,16 @@ bm_2 <- FindClusters(object = bm_2, resolution = 0.1) #default is resolution = 0
 
 An elbow plot was created to evaluate how many PCs are needed to capture the majority of variation in the data. The elbow is vaguely defined as where the plot angles to flatten horizontally, suggesting a drop-off in standard deviation and our threshold. Obviously, this is a very qualitative measure and other methods can be used to qualitatively create a threshold. Based on our plot, it seemed most variation is accounted for by PCs 1 to 13. Therefore, RunUMAP was changed to use the first 13 PCs.
 
-```{r UMAP, fig.width=8, fig.height=4, dpi=300}
+```{r UMAP, eval=FALSE}
+
+bm_2 <- RunUMAP(object = bm_2, dims = 1:13) #default is 1:5
+
+```
+
+```{r Plots for UMAP, fig.width=4, fig.height=4, dpi=300}
 
 #check for # of PCs to use in UMAP 
 ElbowPlot(bm_2)
-
-bm_2 <- RunUMAP(object = bm_2, dims = 1:13) #default is 1:5
 
 #check what the UMAP looks like 
 DimPlot(bm_2, reduction = 'umap')
@@ -317,19 +353,27 @@ DimPlot(bm_2, reduction = 'umap')
 
 ### Velocity
 
-The [RunVelocity command](https://rdrr.io/github/satijalab/seurat-wrappers/man/RunVelocity.html) requires an object with information on the spliced and unspliced reads. You can also specify which reduction method the command should use, with the default being PCA. 
+The [RunVelocity command](https://rdrr.io/github/satijalab/seurat-wrappers/man/RunVelocity.html) requires an object with information on the spliced and unspliced reads. You can also specify which reduction method the command should use, with the default being PCA. It calls on the velocyto command 'gene.relative.velocity.estimates'. 
 
-Excluding the main parameters, there are [additional parameters the function can take](https://github.com/velocyto-team/velocyto.R/blob/master/R/momentum_routines.R) in. Most notably:
+Some key parameters for this method are described [here](https://github.com/velocyto-team/velocyto.R/blob/master/R/momentum_routines.R) and summarized below:
 
 * deltaT - the amount of time to project the cell forward; default = 1
 * kCells - number of k nearest neighbors (NN) to use in slope calculation smoothing; default = 10
-* fit.quantile - perform gamma fit on a [fit.quantile]% of top/bottom quantiles of expression magnitudes
+* fit.quantile - perform gamma fit on a percentage of top/bottom quantiles of expression magnitudes; default = 0.02
     * recommended to do if can afford to do kNN smoothing
     * ex: 0.02 means top/bottom 2% expression quantiles
+* diagonal.quantiles - whether extreme quantiles should be computed diagonally
+* min.nmat.emat.correlation - minimum required Spearman rank correlation between nascent (unspliced) and exonic (spliced) counts of a gene; default = 0.05
+* min.nmat.emat.slope - minimum slope of unspliced~spliced regression; default = 0.05
+  * since spliced RNA is a processed form of unspliced RNA, it follows that unspliced and spliced expression should be generally positively correlated across a population of cells; this is why the default value is positive and >0 
 
-```{r Velocity with New Parameters, fig.width=8, fig.height=4, dpi=300}
+```{r Calculate Velocity with New Parameters, eval=FALSE}
 
 bm_2 <- RunVelocity(object = bm_2, deltaT = 1, kCells = 25, fit.quantile = 0.02) #note to self: go back and check parameters for this
+
+```
+
+```{r Plot Velocity with New Parameters, fig.width=8, fig.height=8, dpi=300}
 
 ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm_2)))
 names(x = ident.colors) <- levels(x = bm_2)
@@ -345,9 +389,167 @@ show.velocity.on.embedding.cor(emb = Embeddings(object = bm_2, reduction = "umap
 
 ```
 
-## Merging with Previously Created Seurat Object
+### Velocyto Feature Plots {.tabset .tabset-fade .tabset-pills} 
 
-```{r, eval=FALSE}
+In order to assess the clustering and velocity results, we observe both the spliced and unspliced expression levels of previously identified features. These help us hypothesize which clusters are particular cell types. In this case, I visualized genes that were more highly expressed in homeostatic microglia and those more highly expressed in monocytes (according to prior analysis by previous rotation student Emily Kozik). 
+
+Additionally, I looked at plots for all of the genes in the Patir list that were detected as both spliced and unspliced transcripts. We have to prepare the Patir list for our analysis by merging with the gencode reference, ensuring we have the conversion between ensemblID and gene symbols.  
+
+```{r Convert EnsemblID to Gene Symbols}
+# Convert EnsemblID and Gene Symbols 
+##get conversion table for Gencode 30
+gencode_30 = read.table("./ens.geneid.gencode.v30", header = T, stringsAsFactors = F)
+colnames(gencode_30) = c("ensembl","symbol")
+##load modules information
+geneList = read.table("./Patir_core_249g.txt", 
+                      header = T, stringsAsFactors = F, sep = "\t")
+##merge
+mergedIds = merge(geneList,gencode_30, by = "symbol")
+
+##write to file
+head(mergedIds)
+#write.table(x = mergedIds, file = "/sc/arion/projects/ad-omics/mynd-ad/single_cell_res/velocity_res/Patir_core_ref.txt",
+            #quote = F, row.names = F, sep = "\t")
+
+##check conversion success 
+dim(geneList)
+dim(mergedIds)
+geneList[! geneList$symbol %in% mergedIds$symbol ,]
+```
+
+The resultant plots show four different representations of the data focusing on the spliced and unspliced reads. From left to right: 
+
+1. Shows the amount of spliced count abundance for a particular gene, with the deepest red representing the most expression. 
+2. Shows the amount of unspliced count abundance for a particular gene, with the deepest red representing the most expression. 
+3. Is called an unspliced-spliced phase portrait. It shows the ratio of unspliced and spliced count abundance for a particular gene compared to the steady state of expression, represented by a dashed line. The colors correspond to cluster colors in a TSNE or UMAP.
+4. Shows unspliced count residuals based on the estimated γ fit, with positive residuals indicating expected upregulation, and negative residuals indicating expected downregulation of a gene.
+  +  This measure is the basis of the subsequent velocity estimates
+
+```{r Velocyto Phase Portrait}
+#Fitting of individual genes can be visualized using “show.gene” option. To save time, we’ll pass previously-calculated velocity (rvel.qf) to save calculation time:
+velocytoFeaturePlot <- function(object, ensembles, names){
+  index = 1
+  
+  ensembles = ensembles[ensembles %in% rownames(object$unspliced@data)]
+  
+  for(gene in ensembles){
+    #only make a plot for genes with some unspliced reads
+    if(sum(object$unspliced[gene]@p) == 0){
+      print(paste0("There are no unspliced reads for ", gene, " or ", names[index]))
+    }
+    else{
+    print(paste0("Plot for ", gene, " or ", names[index]))
+    
+    #make plot
+    gene.relative.velocity.estimates(emat = object$spliced, nmat = object$unspliced, kCells = 25, fit.quantile = 0.02, 
+                                 old.fit=Tool(object, slot = "RunVelocity"),
+                                 show.gene=gene, cell.emb=Embeddings(object, "umap"), 
+                                 cell.colors=cell.colors)
+    }
+    #increment index
+    index = index + 1 
+  }
+}
 
 ```
 
+#### 1 - Markers from Previous Rotation  {.tabset .tabset-fade .tabset-pills}
+```{r Markers from Previous Rotation, fig.width=16, fig.height=6, dpi=300}
+
+#Homeostatic Gene Set
+ensemb = c("ENSG00000168329.13", "ENSG00000171659.15", "ENSG00000169313.9", "ENSG00000181631.7")
+names = c("CX3CR1", "GPR34", "P2RY12", "P2RY13")
+velocytoFeaturePlot(bm_2, ensemb, names)
+
+#other (ie monocyte markers)
+ensemb = c("ENSG00000204472.13", "ENSG00000173372.17", "ENSG00000011600.11")
+names = c("AIF1","C1QA","TYROBP")
+velocytoFeaturePlot(bm_2, ensemb, names)
+
+#Patir list 
+head(mergedIds)
+ensemb = c(mergedIds[1:5,"ensembl"])
+names = c(mergedIds[1:5,"symbol"])
+velocytoFeaturePlot(bm_2, ensemb, names)
+
+```
+
+#### 2 - Homeostatic Markers  {.tabset .tabset-fade .tabset-pills}
+We also looked at Homeostatic microglia markers as summarized in Figure 6 of [Keren-Shaul et al 2017](https://www.sciencedirect.com/science/article/pii/S0092867417305780?via%3Dihub). 
+
+```{r Homeostatic Markers, fig.width=16, fig.height=6, dpi=300}
+#homeostatic microglia
+names = c("Hexb", "Cst3", "Cx3cr1", "Ctsd",
+          "Csf1r", "Ctss", "Sparc", "Tmsb4x",
+          "P2ry12", "C1qa", "C1qb")
+ensemb = c("ENSG00000049860.14", "ENSG00000101439.9", "ENSG00000168329.13", "ENSG00000117984.14",
+          "ENSG00000182578.13", "ENSG00000163131.11", "ENSG00000113140.11", "ENSG00000205542.11",
+          "ENSG00000169313.9", "ENSG00000173372.17", "ENSG00000173369.16")
+velocytoFeaturePlot(bm_2, ensemb, names)
+
+#grep "Hexb\|Cst3\|Cx3cr1\|Ctsd\|Csf1r\|Ctss\|Sparc\|Tmsb4x\|P2ry12\|C1qa\|C1qb" -iw ens.geneid.gencode.v30
+```
+
+#### 3 - Stage 1 DAM Markers  {.tabset .tabset-fade .tabset-pills}
+We also looked at DAM microglia markers as summarized in Figure 6 of [Keren-Shaul et al 2017](https://www.sciencedirect.com/science/article/pii/S0092867417305780?via%3Dihub). 
+
+```{r Stage 1 DAM Markers, fig.width=16, fig.height=6, dpi=300}
+#stage 1 DAM
+names = c("Cx3cr1", "P2ry12", "Tmem119", 
+          "Tyrobp", "Ctsb", "Ctsd", 
+          "Apoe", "B2m", "Fth1", "Lyz")
+ensembl = c("ENSG00000168329.13", "ENSG00000169313.9", "ENSG00000183160.9", 
+          "ENSG00000011600.11", "ENSG00000164733.21", "ENSG00000117984.14", 
+          "ENSG00000130203.10", "ENSG00000166710.19", "ENSG00000167996.16", 
+          "ENSG00000090382.6")
+#Cx3cr1, P2ry12 downregulated in DAM; also present at homeostatic states
+
+velocytoFeaturePlot(bm_2, ensembl, names)
+
+#grep "Cx3cr1\|P2ry12\|Tmem119\|Tyrobp\|Ctsb\|Ctsd\|Apoe\|B2m\|Fth1\|Lyz" -iw ens.geneid.gencode.v30
+```
+
+#### 4 - Stage 2 DAM Markers  {.tabset .tabset-fade .tabset-pills}
+We also looked at DAM microglia markers as summarized in Figure 6 of [Keren-Shaul et al 2017](https://www.sciencedirect.com/science/article/pii/S0092867417305780?via%3Dihub). 
+
+```{r Stage 2 DAM Markers, fig.width=16, fig.height=6, dpi=300}
+#stage 2 DAM
+names = c("Trem2", "Axl", "Cst7", "Ctsl", 
+          "Lpl", "Cd9", "Csf1", "Itgax", 
+          "Clec7a", "Lilrb4", "Timp2")
+ensembl = c("ENSG00000095970.16", "ENSG00000167601.12", "ENSG00000077984.6", 
+            "ENSG00000135047.15", "ENSG00000175445.16", "ENSG00000010278.14", 
+            "ENSG00000184371.14", "ENSG00000140678.16", "ENSG00000172243.17", 
+            "ENSG00000186818.12", "ENSG00000035862.12")
+
+velocytoFeaturePlot(bm_2, ensembl, names)
+
+#grep "Trem2\|Axl\|Cst7\|Ctsl\|Lpl\|Cd9\|Csf1\|Ccl6\|Itgax\|Clec7a\|Lilrb4\|Timp2" -iw ens.geneid.gencode.v30
+```
+
+## Interpreting Velocity Estimates
+
+RNA velocity estimates are still relatively new so there is still a lot to learn and are some caveats. 
+
+For example, [this tutorial](https://nbisweden.github.io/single-cell_sib_scilifelab/session-trajectories/4_velocity.html) cites several potential concerns, including:
+
+* velocity vectors are noisy, so you need to average over many cells (using 'kCells' parameter) while also trying not to overgeneralize 
+* high density regions highly influence the vectors of nearby low density regions (a similar problem exists with imputation methods)
+* suggested upregulation of particular genes may be an increase in detected unspliced reads by chance or technical limitations
+* there may be something akin to ‘overinflation of fold-changes’ just like in bulk data
+* problems with the estimation of γ and low counts may bias gene level velocity estimations
+
+While we would like to interpret higher unspliced expression as an indication of upregulation, and higher spliced expression as an indication of downregulation, this [tutorial](https://jef.works/blog/2020/01/14/rna_velocity_analysis_tutorial_tips/) suggests alternative explanations; higher unspliced expression may be associated with lower spliced expression because of nuclear retention. This is an important point - we must be careful and think critically for our biological interpretation of these single gene velocity estimates. 
+
+```{r Create Rdata objects, eval=FALSE}
+
+#Save objects from intial run of velocyto (SCTransform method)
+save(ldat, bm, file = "velocytoRun1_scT.RData")
+
+#Save objects from second run of velocyto (LogNorm method)
+save(ldat, bm_2, file = "velocytoRun2_log.RData")
+```
+
+```{r Session Information}
+sessionInfo()
+```
