@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Mikaela Rosen" />
+
+
+<title>velocyto</title>
+
+<script src="velocyto_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="velocyto_files/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
+<script src="velocyto_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="velocyto_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="velocyto_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="velocyto_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="velocyto_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="velocyto_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="velocyto_files/navigation-1.1/tabsets.js"></script>
+<script src="velocyto_files/navigation-1.1/codefolding.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; } /* Keyword */
+code > span.ch { color: #008080; } /* Char */
+code > span.st { color: #008080; } /* String */
+code > span.co { color: #008000; } /* Comment */
+code > span.ot { color: #ff4000; } /* Other */
+code > span.al { color: #ff0000; } /* Alert */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #008000; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #008080; } /* SpecialChar */
+code > span.vs { color: #008080; } /* VerbatimString */
+code > span.ss { color: #008080; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #0000ff; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #ff4000; } /* Preprocessor */
+code > span.do { color: #008000; } /* Documentation */
+code > span.an { color: #008000; } /* Annotation */
+code > span.cv { color: #008000; } /* CommentVar */
+code > span.at { } /* Attribute */
+code > span.in { color: #008000; } /* Information */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">velocyto</h1>
+<h4 class="author">Mikaela Rosen</h4>
+<h4 class="date">6/29/2021</h4>
+
+</div>
+
+
+<div id="pre-processing-of-the-data-to-create-a-loom-file" class="section level2">
+<h2>Pre-processing of the Data to create a Loom File</h2>
+<p>In order to calculate RNA Velocity using Velocyto, you first need to produce a <strong>Loom file</strong>. This file can be made in two (most common) different ways, described <a href="https://github.com/basilkhuder/Seurat-to-RNA-Velocity#kallisto-bustools">here</a> and briefly summarized below.</p>
+<p>Before using either tool on Minerva, the anaconda environment must be created as follows.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Create the anaconda environment</span>
+<span class="ex">ml</span> anaconda3/2020.11<span class="kw">;</span> <span class="va">CONDA_BASE=$(</span><span class="ex">conda</span> info --base<span class="va">)</span>; <span class="bu">source</span> <span class="va">$CONDA_BASE</span>/etc/profile.d/conda.sh<span class="kw">;</span> <span class="ex">ml</span> purge
+
+<span class="co"># Run this line only once for initial setup</span>
+<span class="ex">mamba</span> create -n velocyto_env velocyto.py bustools kallisto kb-python
+
+<span class="co"># Activate anaconda environment to use</span>
+<span class="ex">conda</span> activate velocyto_env
+
+<span class="co"># Deactivate environment when finished</span>
+<span class="ex">conda</span> deactivate</code></pre></div>
+<div id="using-velocyto.py" class="section level3">
+<h3>1) Using Velocyto.py</h3>
+<p>This is a Python implementation of Velocyto. The entire Velocyto analysis pipeline can be run using this Python tool. Importantly, the pre-processing (aka the creation of the loom file) can only be run in the Python and not in the R. This method requires, at minimum, a Binary Alignment Map (BAM) file for your data and a Gene Transfer Format (GTF) gene annotation file. See <a href="http://velocyto.org/velocyto.py/tutorial/cli.html#run-run-on-any-technique-advanced-use">Velocyto's Python documentation</a> for more details.</p>
+<p>Here is an example of the command to create the loom file from BAM files made using any sequencing technique and GTF file downloaded from <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references">CellRanger</a>.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Run velocyto.py using its generic &#39;run&#39; command with the bare minimum inputs</span>
+<span class="ex">velocyto</span> run -o out -v /hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/sc_bams_myndad/possorted_genome_bam_P1.bam /hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/gtf_annotation/refdata-gex-GRCh38-2020-A/genes/genes.gtf</code></pre></div>
+<p>Note: It is cited that typical use of this command takes ~3h and this time varies based on sequencing depth and CPU power. On Minerva, the process was not finished by the 3h mark. Because of this, we used the alternative method described next.</p>
+</div>
+<div id="using-kallisto" class="section level3">
+<h3>2) Using Kallisto</h3>
+<p>In Kallisto, use the <em>kb</em> function. First, either build or download (as shown here) a reference file. To make reference files you'll need FASTA and GTF files. Second, generate a counts table which can be output as a loom file. See <a href="https://www.kallistobus.tools/index.html">Kallisto|Bustools documentation</a> for additional details.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Download the index files of Kallisto</span>
+<span class="ex">kb</span> ref -d linnarsson -i index.idx -g t2g.txt -c1 spliced_t2c.txt -c2 unspliced_t2c.txt
+
+<span class="co"># Generate the Loom file</span>
+<span class="co"># (example submits to a computing node)</span>
+<span class="co">## x specifies single-cell technology</span>
+<span class="co">## --lamanno specifies we want to calculate RNA velocity</span>
+<span class="bu">echo</span> <span class="st">&quot;kb count -t 20 --loom -i index.idx -g t2g.txt -x 10xv3 -o mic_sc \</span>
+<span class="st">-c1 spliced_t2c.txt -c2 unspliced_t2c.txt --workflow lamanno --filter bustools \</span>
+<span class="st">/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-HIPP/MG-22-HIPP_S1_L001_R1_001.fastq.gz \</span>
+<span class="st">/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-HIPP/MG-22-HIPP_S1_L001_R2_001.fastq.gz \</span>
+<span class="st">/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-MFG/MG-22-MFG_S1_L001_R1_001.fastq.gz \</span>
+<span class="st">/sc/arion/projects/ad-omics/sc_mic_rawdata/30-410769069/00_fastq/MG-22-MFG/MG-22-MFG_S1_L001_R2_001.fastq.gz&quot;</span> <span class="kw">|</span> <span class="ex">bsub</span> -n 20 -R <span class="st">&quot;rusage[mem=2000]&quot;</span> -R <span class="st">&quot;span[hosts=1]&quot;</span> -W 12:00 -oo kb.out -eo kb.err -P acc_ad-omics -q express -J kb </code></pre></div>
+<p>Of note, there are other manual alterations you can make when using the kallisto|bustools workflow, including specifying flags such that you can work with UMI barcoded data. See this useful <a href="https://bustools.github.io/BUS_notebooks_R/velocity.html">kallisto|bustools tutorial</a> for more details - look specifically at the bustools capture method.</p>
+</div>
+<div id="assessment-of-processing-methods" class="section level3">
+<h3>Assessment of Processing Methods</h3>
+<p>A <a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008585">recent publication</a> compared the tools available to quantify the spliced and unspliced RNA and found that the tool selection can have considerable effects on both the RNA velocity estimates and the biological interpretation. These tools include <em>velocyto.py</em>, <em>kallisto|bustools</em>, STARsolo, dropEst and alevin. However, it is important to note that the authors used scVelo and not Velocyto to calculate their velocities.</p>
+<p>The 'best' available methods based on their work are summarized in Table 4 of their work. They classified methods based on their</p>
+<ul>
+<li>agreement with expected velocity fields for each experimental study used in the work</li>
+<li>whether or not the method was strand aware</li>
+<li>its ability to count multigene reads</li>
+</ul>
+<p>Notably, among the methods with the most agreement with expected velocity fields was what they referred to as the kallisto|bus_sep_excl. This means the kallisto|bustools method which uses the ‘separate’ intron definition and the ‘exclude’ capture approach (the default settings when using the kb-python wrapper). This is the same method that was used and described here.</p>
+</div>
+</div>
+<div id="understanding-the-loom-file" class="section level2">
+<h2>Understanding the Loom File</h2>
+<p>The <a href="http://linnarssonlab.org/loompy/index.html">Linnarson lab</a> developed <strong>loom</strong>, an HDF5-based data structure, to easily store single cell datasets and metadata. The Satija lab created the <em>loomR</em> package in response to allow for analysis of loom files using the Seurat pipeline. Their <a href="https://satijalab.org/loomr/loomr_tutorial">tutorial</a> is very helpful to learn about the structure of a loom file and how to work with it. Similarly, here I explore loom files using our data.</p>
+<p>A <strong>loom</strong> object is a container for six sub-objects: one dataset five groups. The general sub-objects include the following:</p>
+<ul>
+<li>Matrix - with two dimensions of n genes and m cells</li>
+<li>Layers - alternative representations of the data with the same dimensions as the original data</li>
+<li>row_attrs and col_attrs - row and column names</li>
+<li>row_graphs and col_graphs - row and column graphs</li>
+</ul>
+<p>Again, see the <a href="https://satijalab.org/loomr/loomr_tutorial">tutorial</a> for more information about official <em>loom</em> objects.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#read in the first rdata file which has the objects made in chunks 7 and 10</span>
+<span class="kw">load</span>(<span class="st">&quot;velocytoRun1_scT.RData&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remotes::install_github(&quot;lambdamoses/BUStoolsR&quot;)</span>
+<span class="kw">library</span>(BUSpaRse)
+<span class="kw">library</span>(Seurat)</code></pre></div>
+<pre><code>## Attaching SeuratObject</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(SeuratWrappers)
+<span class="kw">library</span>(velocyto.R)</code></pre></div>
+<pre><code>## Loading required package: Matrix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create path to loom files created in pre-processing </span>
+d &lt;-<span class="st"> &quot;kallisto_res/mic_sc/counts_filtered&quot;</span>
+
+<span class="co"># Read in the loom file</span>
+ldat &lt;-<span class="st"> </span><span class="kw">read_velocity_output</span>(<span class="dt">spliced_dir =</span> d, <span class="dt">spliced_name =</span> <span class="st">&quot;spliced&quot;</span>, <span class="dt">unspliced_dir =</span> d, <span class="dt">unspliced_name =</span> <span class="st">&quot;unspliced&quot;</span>)</code></pre></div>
+<p>As you can see, in our data we have two <em>dgCMatrix</em> objects as our <em>'loom'</em> object. One of these objects holds the spliced and the other the unspliced data. This type of object is specifically designed to hold sparse numeric matrices in the compressed, sparse, column-oriented format. It follows a slightly different format, although the general components are similar to those of loom files - crucially they both hold a matrix and details about rows/columns.</p>
+<p>Within each <em>dgCMatrix</em> object are particular slots:</p>
+<ul>
+<li>i - holds the row index of the non-zero elements
+<ul>
+<li>ex: the k<sup>th</sup> index of slot i holds the row index for the k<sup>th</sup> non-zero element in the object</li>
+</ul></li>
+<li>p - holds the cumulative number of non-zero elements as we move from one column to the next column, left to right
+<ul>
+<li>its length is equal to [ncols(matrix) + 1] and the first value is always 0</li>
+<li>ex: the j<sup>th</sup> index of slot p holds the the number of non-zero elements in columns 0 to j-1 (inclusive)</li>
+<li>note: since p is a cumulative sum, we can use diff() to get the number of non-zero entries in each column</li>
+</ul></li>
+<li>x - holds the non-zero elements in the data sorted column-wise (top to bottom, left to right)
+<ul>
+<li>ex: all non-zero entries in column 1 are followed by those in column 2</li>
+</ul></li>
+<li>Dim and Dimnames - denotes the number and names (respectively) of the rows and columns</li>
+<li>factors - a list of factorizations of the matrix
+<ul>
+<li>typically empty and is updated automatically whenever a matrix factorization is computed</li>
+</ul></li>
+</ul>
+<p>To learn more about <em>dgCMatrix</em> objects and the slots within them check out this <a href="https://www.r-bloggers.com/2020/03/what-is-a-dgcmatrix-object-made-of-sparse-matrix-format-in-r/">blog</a> and this <a href="https://slowkow.com/notes/sparse-matrix/">sparse matrix tutorial</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># View summary information about our data</span>
+<span class="kw">summary</span>(ldat)</code></pre></div>
+<pre><code>##           Length    Class     Mode
+## spliced   537618437 dgCMatrix S4  
+## unspliced 537618437 dgCMatrix S4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(ldat)</code></pre></div>
+<pre><code>## List of 2
+##  $ spliced  :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. ..@ i       : int [1:8905876] 47 67 72 77 118 140 145 163 199 203 ...
+##   .. ..@ p       : int [1:9212] 0 1907 3191 4627 5529 7143 8302 8554 9736 10783 ...
+##   .. ..@ Dim     : int [1:2] 58367 9211
+##   .. ..@ Dimnames:List of 2
+##   .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. ..@ x       : num [1:8905876] 1 1 1 1 7 1 1 2 1 2 ...
+##   .. ..@ factors : list()
+##  $ unspliced:Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. ..@ i       : int [1:11666203] 7 8 48 60 72 144 148 157 163 165 ...
+##   .. ..@ p       : int [1:9212] 0 2453 3953 5868 7008 9019 10704 11155 13023 14066 ...
+##   .. ..@ Dim     : int [1:2] 58367 9211
+##   .. ..@ Dimnames:List of 2
+##   .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. ..@ x       : num [1:11666203] 1 1 2 2 1 1 1 2 1 2 ...
+##   .. ..@ factors : list()</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># View the `matrix` dataset with the double subset [[ operator or using $ sign</span>
+## our matrix are called spliced or unspliced
+   <span class="co">#ldat[[&quot;spliced&quot;]] not run</span>
+   <span class="co">#ldat$spliced</span>
+
+<span class="co"># Access specific parts of the data using indexing</span>
+ldat[[<span class="st">&quot;spliced&quot;</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
+<pre><code>## 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+##                   AAACCCAAGGTGCCTC AAACCCACAGACTGCC AAACCCAGTTAAGTCC
+## ENSG00000277400.1                .                .                .
+## ENSG00000274847.1                .                .                .
+## ENSG00000276256.1                .                .                .
+## ENSG00000278198.1                .                .                .
+## ENSG00000273496.1                .                .                .
+##                   AAACCCATCGCAATTG AAACCCATCGCTAAAC
+## ENSG00000277400.1                .                .
+## ENSG00000274847.1                .                .
+## ENSG00000276256.1                .                .
+## ENSG00000278198.1                .                .
+## ENSG00000273496.1                .                .</code></pre>
+</div>
+<div id="calculating-rna-velocity-using-velocyto-and-the-seurat-pipeline" class="section level2">
+<h2>Calculating RNA Velocity using Velocyto and the Seurat Pipeline</h2>
+<p>Our analysis followed the steps outlined in a Satija Lab <a href="https://github.com/satijalab/seurat-wrappers/blob/master/docs/velocity.md">vignette</a> which illustrates how to estimate RNA velocity using Seurat objects.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(bm)</code></pre></div>
+<pre><code>## [1] &quot;Seurat&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;SeuratObject&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(bm)</code></pre></div>
+<pre><code>## Length  Class   Mode 
+##      1 Seurat     S4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(bm)</code></pre></div>
+<pre><code>## Formal class &#39;Seurat&#39; [package &quot;SeuratObject&quot;] with 13 slots
+##   ..@ assays      :List of 3
+##   .. ..$ spliced  :Formal class &#39;Assay&#39; [package &quot;SeuratObject&quot;] with 8 slots
+##   .. .. .. ..@ counts       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:8905876] 47 67 72 77 118 140 145 163 199 203 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 1907 3191 4627 5529 7143 8302 8554 9736 10783 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:8905876] 1 1 1 1 7 1 1 2 1 2 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ data         :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:8905876] 47 67 72 77 118 140 145 163 199 203 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 1907 3191 4627 5529 7143 8302 8554 9736 10783 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:8905876] 1 1 1 1 7 1 1 2 1 2 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ scale.data   : num[0 , 0 ] 
+##   .. .. .. ..@ key          : chr &quot;spliced_&quot;
+##   .. .. .. ..@ assay.orig   : NULL
+##   .. .. .. ..@ var.features : logi(0) 
+##   .. .. .. ..@ meta.features:&#39;data.frame&#39;:   58367 obs. of  0 variables
+##   .. .. .. ..@ misc         : list()
+##   .. ..$ unspliced:Formal class &#39;Assay&#39; [package &quot;SeuratObject&quot;] with 8 slots
+##   .. .. .. ..@ counts       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:11666203] 7 8 48 60 72 144 148 157 163 165 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 2453 3953 5868 7008 9019 10704 11155 13023 14066 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:11666203] 1 1 2 2 1 1 1 2 1 2 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ data         :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:11666203] 7 8 48 60 72 144 148 157 163 165 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 2453 3953 5868 7008 9019 10704 11155 13023 14066 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:11666203] 1 1 2 2 1 1 1 2 1 2 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ scale.data   : num[0 , 0 ] 
+##   .. .. .. ..@ key          : chr &quot;unspliced_&quot;
+##   .. .. .. ..@ assay.orig   : NULL
+##   .. .. .. ..@ var.features : logi(0) 
+##   .. .. .. ..@ meta.features:&#39;data.frame&#39;:   58367 obs. of  0 variables
+##   .. .. .. ..@ misc         : list()
+##   .. ..$ SCT      :Formal class &#39;SCTAssay&#39; [package &quot;Seurat&quot;] with 9 slots
+##   .. .. .. ..@ SCTModel.list:List of 1
+##   .. .. .. .. ..$ model1:Formal class &#39;SCTModel&#39; [package &quot;Seurat&quot;] with 6 slots
+##   .. .. .. .. .. .. ..@ feature.attributes:&#39;data.frame&#39;: 29246 obs. of  9 variables:
+##   .. .. .. .. .. .. .. ..$ detection_rate       : num [1:29246] 0.0051 0.00206 0.00901 0.03268 0.01303 ...
+##   .. .. .. .. .. .. .. ..$ gmean                : num [1:29246] 0.00368 0.00152 0.0064 0.02393 0.00929 ...
+##   .. .. .. .. .. .. .. ..$ variance             : num [1:29246] 0.00605 0.00271 0.0099 0.03915 0.01447 ...
+##   .. .. .. .. .. .. .. ..$ residual_mean        : num [1:29246] 0.00162 0.006545 -0.000494 -0.001143 -0.002669 ...
+##   .. .. .. .. .. .. .. ..$ residual_variance    : num [1:29246] 0.991 1.242 0.869 0.905 0.836 ...
+##   .. .. .. .. .. .. .. ..$ theta                : num [1:29246] 0.0301 0.0174 0.0472 0.154 0.0664 ...
+##   .. .. .. .. .. .. .. ..$ (Intercept)          : num [1:29246] -11.8 -12.8 -10.8 -10 -10.5 ...
+##   .. .. .. .. .. .. .. ..$ log_umi              : num [1:29246] 2 2.02 1.88 2.05 1.92 ...
+##   .. .. .. .. .. .. .. ..$ genes_log_gmean_step1: logi [1:29246] FALSE FALSE FALSE FALSE FALSE FALSE ...
+##   .. .. .. .. .. .. ..@ cell.attributes   :&#39;data.frame&#39;: 9211 obs. of  3 variables:
+##   .. .. .. .. .. .. .. ..$ umi        : num [1:9211] 4816 2181 2597 1506 2942 ...
+##   .. .. .. .. .. .. .. ..$ log_umi    : num [1:9211] 3.68 3.34 3.41 3.18 3.47 ...
+##   .. .. .. .. .. .. .. ..$ cells_step1: logi [1:9211] FALSE FALSE TRUE TRUE FALSE TRUE ...
+##   .. .. .. .. .. .. ..@ clips             :List of 2
+##   .. .. .. .. .. .. .. ..$ vst: num [1:2] -96 96
+##   .. .. .. .. .. .. .. ..$ sct: num [1:2] -17.5 17.5
+##   .. .. .. .. .. .. ..@ umi.assay         : chr &quot;spliced&quot;
+##   .. .. .. .. .. .. ..@ model             : chr &quot;y ~ log_umi&quot;
+##   .. .. .. .. .. .. ..@ arguments         :List of 25
+##   .. .. .. .. .. .. .. ..$ latent_var          : chr &quot;log_umi&quot;
+##   .. .. .. .. .. .. .. ..$ batch_var           : NULL
+##   .. .. .. .. .. .. .. ..$ latent_var_nonreg   : NULL
+##   .. .. .. .. .. .. .. ..$ n_genes             : num 2000
+##   .. .. .. .. .. .. .. ..$ n_cells             : num 5000
+##   .. .. .. .. .. .. .. ..$ method              : chr &quot;poisson&quot;
+##   .. .. .. .. .. .. .. ..$ do_regularize       : logi TRUE
+##   .. .. .. .. .. .. .. ..$ theta_regularization: chr &quot;od_factor&quot;
+##   .. .. .. .. .. .. .. ..$ res_clip_range      : num [1:2] -96 96
+##   .. .. .. .. .. .. .. ..$ bin_size            : num 500
+##   .. .. .. .. .. .. .. ..$ min_cells           : num 5
+##   .. .. .. .. .. .. .. ..$ residual_type       : chr &quot;pearson&quot;
+##   .. .. .. .. .. .. .. ..$ return_cell_attr    : logi TRUE
+##   .. .. .. .. .. .. .. ..$ return_gene_attr    : logi TRUE
+##   .. .. .. .. .. .. .. ..$ return_corrected_umi: logi TRUE
+##   .. .. .. .. .. .. .. ..$ min_variance        : num -Inf
+##   .. .. .. .. .. .. .. ..$ bw_adjust           : num 3
+##   .. .. .. .. .. .. .. ..$ gmean_eps           : num 1
+##   .. .. .. .. .. .. .. ..$ theta_estimation_fun: chr &quot;theta.ml&quot;
+##   .. .. .. .. .. .. .. ..$ theta_given         : NULL
+##   .. .. .. .. .. .. .. ..$ verbosity           : num 2
+##   .. .. .. .. .. .. .. ..$ verbose             : NULL
+##   .. .. .. .. .. .. .. ..$ show_progress       : NULL
+##   .. .. .. .. .. .. .. ..$ sct.clip.range      : num [1:2] -17.5 17.5
+##   .. .. .. .. .. .. .. ..$ sct.method          : chr &quot;default&quot;
+##   .. .. .. ..@ counts       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:8041628] 75 95 109 146 230 236 238 263 264 267 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 1059 2339 3753 4652 6189 7345 7709 8862 9876 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 29246 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:29246] &quot;ENSG00000227232.5&quot; &quot;ENSG00000238009.6&quot; &quot;ENSG00000233750.3&quot; &quot;ENSG00000241860.7&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:8041628] 2 1 1 1 2 2 1 1 1 1 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ data         :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:8041628] 75 95 109 146 230 236 238 263 264 267 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 1059 2339 3753 4652 6189 7345 7709 8862 9876 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 29246 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:29246] &quot;ENSG00000227232.5&quot; &quot;ENSG00000238009.6&quot; &quot;ENSG00000233750.3&quot; &quot;ENSG00000241860.7&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:8041628] 1.099 0.693 0.693 0.693 1.099 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ scale.data   : num [1:3000, 1:9211] -0.5027 -0.3603 -0.0368 -0.0612 -0.0935 ...
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:3000] &quot;ENSG00000237491.10&quot; &quot;ENSG00000187608.10&quot; &quot;ENSG00000224969.1&quot; &quot;ENSG00000285812.1&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. ..@ key          : chr &quot;sct_&quot;
+##   .. .. .. ..@ assay.orig   : chr &quot;spliced&quot;
+##   .. .. .. ..@ var.features : chr [1:3000] &quot;ENSG00000287001.1&quot; &quot;ENSG00000163220.11&quot; &quot;ENSG00000169429.11&quot; &quot;ENSG00000143546.10&quot; ...
+##   .. .. .. ..@ meta.features:&#39;data.frame&#39;:   29246 obs. of  0 variables
+##   .. .. .. ..@ misc         : Named list()
+##   ..@ meta.data   :&#39;data.frame&#39;: 9211 obs. of  9 variables:
+##   .. ..$ orig.ident        : Factor w/ 1 level &quot;SeuratProject&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##   .. ..$ nCount_spliced    : num [1:9211] 4816 2181 2597 1506 2942 ...
+##   .. ..$ nFeature_spliced  : int [1:9211] 1907 1284 1436 902 1614 1159 252 1182 1047 590 ...
+##   .. ..$ nCount_unspliced  : num [1:9211] 5148 2476 3850 1768 3818 ...
+##   .. ..$ nFeature_unspliced: int [1:9211] 2453 1500 1915 1140 2011 1685 451 1868 1043 604 ...
+##   .. ..$ nCount_SCT        : num [1:9211] 1706 1927 1953 1513 2031 ...
+##   .. ..$ nFeature_SCT      : int [1:9211] 1059 1280 1414 899 1537 1156 364 1153 1014 590 ...
+##   .. ..$ SCT_snn_res.0.8   : Factor w/ 18 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 5 2 1 11 1 7 6 5 8 9 ...
+##   .. ..$ seurat_clusters   : Factor w/ 18 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 5 2 1 11 1 7 6 5 8 9 ...
+##   ..@ active.assay: chr &quot;SCT&quot;
+##   ..@ active.ident: Factor w/ 18 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 5 2 1 11 1 7 6 5 8 9 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   ..@ graphs      :List of 2
+##   .. ..$ SCT_nn :Formal class &#39;Graph&#39; [package &quot;SeuratObject&quot;] with 7 slots
+##   .. .. .. ..@ assay.used: chr &quot;SCT&quot;
+##   .. .. .. ..@ i         : int [1:184220] 0 1304 1377 2808 3218 3809 4669 5229 5409 7303 ...
+##   .. .. .. ..@ p         : int [1:9212] 0 12 47 59 76 116 128 138 154 162 ...
+##   .. .. .. ..@ Dim       : int [1:2] 9211 9211
+##   .. .. .. ..@ Dimnames  :List of 2
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. ..@ x         : num [1:184220] 1 1 1 1 1 1 1 1 1 1 ...
+##   .. .. .. ..@ factors   : list()
+##   .. ..$ SCT_snn:Formal class &#39;Graph&#39; [package &quot;SeuratObject&quot;] with 7 slots
+##   .. .. .. ..@ assay.used: chr &quot;SCT&quot;
+##   .. .. .. ..@ i         : int [1:676427] 0 163 343 365 402 608 983 1286 1304 1323 ...
+##   .. .. .. ..@ p         : int [1:9212] 0 99 217 281 349 490 526 624 695 765 ...
+##   .. .. .. ..@ Dim       : int [1:2] 9211 9211
+##   .. .. .. ..@ Dimnames  :List of 2
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. ..@ x         : num [1:676427] 1 0.1111 0.0811 0.0811 0.1765 ...
+##   .. .. .. ..@ factors   : list()
+##   ..@ neighbors   : list()
+##   ..@ reductions  :List of 2
+##   .. ..$ pca :Formal class &#39;DimReduc&#39; [package &quot;SeuratObject&quot;] with 9 slots
+##   .. .. .. ..@ cell.embeddings           : num [1:9211, 1:50] 3.14 2.54 5.1 -7.98 6.09 ...
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:50] &quot;PC_1&quot; &quot;PC_2&quot; &quot;PC_3&quot; &quot;PC_4&quot; ...
+##   .. .. .. ..@ feature.loadings          : num [1:3000, 1:50] -0.0128 -0.2586 -0.2234 -0.2277 -0.0803 ...
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:3000] &quot;ENSG00000287001.1&quot; &quot;ENSG00000163220.11&quot; &quot;ENSG00000169429.11&quot; &quot;ENSG00000143546.10&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:50] &quot;PC_1&quot; &quot;PC_2&quot; &quot;PC_3&quot; &quot;PC_4&quot; ...
+##   .. .. .. ..@ feature.loadings.projected: num[0 , 0 ] 
+##   .. .. .. ..@ assay.used                : chr &quot;SCT&quot;
+##   .. .. .. ..@ global                    : logi FALSE
+##   .. .. .. ..@ stdev                     : num [1:50] 8.89 8.18 6.35 5.1 4.14 ...
+##   .. .. .. ..@ key                       : chr &quot;PC_&quot;
+##   .. .. .. ..@ jackstraw                 :Formal class &#39;JackStrawData&#39; [package &quot;SeuratObject&quot;] with 4 slots
+##   .. .. .. .. .. ..@ empirical.p.values     : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ fake.reduction.scores  : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ empirical.p.values.full: num[0 , 0 ] 
+##   .. .. .. .. .. ..@ overall.p.values       : num[0 , 0 ] 
+##   .. .. .. ..@ misc                      :List of 1
+##   .. .. .. .. ..$ total.variance: num 3229
+##   .. ..$ umap:Formal class &#39;DimReduc&#39; [package &quot;SeuratObject&quot;] with 9 slots
+##   .. .. .. ..@ cell.embeddings           : num [1:9211, 1:2] 4.41 -2.94 1.24 16.16 1.84 ...
+##   .. .. .. .. ..- attr(*, &quot;scaled:center&quot;)= num [1:2] -0.646 -2.932
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:2] &quot;UMAP_1&quot; &quot;UMAP_2&quot;
+##   .. .. .. ..@ feature.loadings          : num[0 , 0 ] 
+##   .. .. .. ..@ feature.loadings.projected: num[0 , 0 ] 
+##   .. .. .. ..@ assay.used                : chr &quot;SCT&quot;
+##   .. .. .. ..@ global                    : logi TRUE
+##   .. .. .. ..@ stdev                     : num(0) 
+##   .. .. .. ..@ key                       : chr &quot;UMAP_&quot;
+##   .. .. .. ..@ jackstraw                 :Formal class &#39;JackStrawData&#39; [package &quot;SeuratObject&quot;] with 4 slots
+##   .. .. .. .. .. ..@ empirical.p.values     : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ fake.reduction.scores  : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ empirical.p.values.full: num[0 , 0 ] 
+##   .. .. .. .. .. ..@ overall.p.values       : num[0 , 0 ] 
+##   .. .. .. ..@ misc                      : list()
+##   ..@ images      : list()
+##   ..@ project.name: chr &quot;SeuratProject&quot;
+##   ..@ misc        : list()
+##   ..@ version     :Classes &#39;package_version&#39;, &#39;numeric_version&#39;  hidden list of 1
+##   .. ..$ : int [1:3] 4 0 0
+##   ..@ commands    :List of 5
+##   .. ..$ SCTransform.spliced  :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;SCTransform.spliced&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-08 16:36:06&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr &quot;SCTransform(object = bm, assay = \&quot;spliced\&quot;)&quot;
+##   .. .. .. ..@ params     :List of 13
+##   .. .. .. .. ..$ assay                  : chr &quot;spliced&quot;
+##   .. .. .. .. ..$ new.assay.name         : chr &quot;SCT&quot;
+##   .. .. .. .. ..$ do.correct.umi         : logi TRUE
+##   .. .. .. .. ..$ ncells                 : num 5000
+##   .. .. .. .. ..$ variable.features.n    : num 3000
+##   .. .. .. .. ..$ variable.features.rv.th: num 1.3
+##   .. .. .. .. ..$ do.scale               : logi FALSE
+##   .. .. .. .. ..$ do.center              : logi TRUE
+##   .. .. .. .. ..$ clip.range             : num [1:2] -17.5 17.5
+##   .. .. .. .. ..$ conserve.memory        : logi FALSE
+##   .. .. .. .. ..$ return.only.var.genes  : logi TRUE
+##   .. .. .. .. ..$ seed.use               : num 1448145
+##   .. .. .. .. ..$ verbose                : logi TRUE
+##   .. ..$ RunPCA.SCT           :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;RunPCA.SCT&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-08 16:36:12&quot;
+##   .. .. .. ..@ assay.used : chr &quot;SCT&quot;
+##   .. .. .. ..@ call.string: chr &quot;RunPCA(object = bm, verbose = FALSE)&quot;
+##   .. .. .. ..@ params     :List of 10
+##   .. .. .. .. ..$ assay          : chr &quot;SCT&quot;
+##   .. .. .. .. ..$ npcs           : num 50
+##   .. .. .. .. ..$ rev.pca        : logi FALSE
+##   .. .. .. .. ..$ weight.by.var  : logi TRUE
+##   .. .. .. .. ..$ verbose        : logi FALSE
+##   .. .. .. .. ..$ ndims.print    : int [1:5] 1 2 3 4 5
+##   .. .. .. .. ..$ nfeatures.print: num 30
+##   .. .. .. .. ..$ reduction.name : chr &quot;pca&quot;
+##   .. .. .. .. ..$ reduction.key  : chr &quot;PC_&quot;
+##   .. .. .. .. ..$ seed.use       : num 42
+##   .. ..$ FindNeighbors.SCT.pca:Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;FindNeighbors.SCT.pca&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-08 16:36:14&quot;
+##   .. .. .. ..@ assay.used : chr &quot;SCT&quot;
+##   .. .. .. ..@ call.string: chr &quot;FindNeighbors(object = bm, dims = 1:20)&quot;
+##   .. .. .. ..@ params     :List of 17
+##   .. .. .. .. ..$ reduction      : chr &quot;pca&quot;
+##   .. .. .. .. ..$ dims           : int [1:20] 1 2 3 4 5 6 7 8 9 10 ...
+##   .. .. .. .. ..$ assay          : chr &quot;SCT&quot;
+##   .. .. .. .. ..$ k.param        : num 20
+##   .. .. .. .. ..$ return.neighbor: logi FALSE
+##   .. .. .. .. ..$ compute.SNN    : logi TRUE
+##   .. .. .. .. ..$ prune.SNN      : num 0.0667
+##   .. .. .. .. ..$ nn.method      : chr &quot;annoy&quot;
+##   .. .. .. .. ..$ n.trees        : num 50
+##   .. .. .. .. ..$ annoy.metric   : chr &quot;euclidean&quot;
+##   .. .. .. .. ..$ nn.eps         : num 0
+##   .. .. .. .. ..$ verbose        : logi TRUE
+##   .. .. .. .. ..$ force.recalc   : logi FALSE
+##   .. .. .. .. ..$ do.plot        : logi FALSE
+##   .. .. .. .. ..$ graph.name     : chr [1:2] &quot;SCT_nn&quot; &quot;SCT_snn&quot;
+##   .. .. .. .. ..$ l2.norm        : logi FALSE
+##   .. .. .. .. ..$ cache.index    : logi FALSE
+##   .. ..$ FindClusters         :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;FindClusters&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-08 16:36:15&quot;
+##   .. .. .. ..@ assay.used : chr &quot;SCT&quot;
+##   .. .. .. ..@ call.string: chr &quot;FindClusters(object = bm)&quot;
+##   .. .. .. ..@ params     :List of 10
+##   .. .. .. .. ..$ graph.name      : chr &quot;SCT_snn&quot;
+##   .. .. .. .. ..$ modularity.fxn  : num 1
+##   .. .. .. .. ..$ resolution      : num 0.8
+##   .. .. .. .. ..$ method          : chr &quot;matrix&quot;
+##   .. .. .. .. ..$ algorithm       : num 1
+##   .. .. .. .. ..$ n.start         : num 10
+##   .. .. .. .. ..$ n.iter          : num 10
+##   .. .. .. .. ..$ random.seed     : num 0
+##   .. .. .. .. ..$ group.singletons: logi TRUE
+##   .. .. .. .. ..$ verbose         : logi TRUE
+##   .. ..$ RunUMAP.SCT.pca      :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;RunUMAP.SCT.pca&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-08 16:36:53&quot;
+##   .. .. .. ..@ assay.used : chr &quot;SCT&quot;
+##   .. .. .. ..@ call.string: chr &quot;RunUMAP(object = bm, dims = 1:20)&quot;
+##   .. .. .. ..@ params     :List of 22
+##   .. .. .. .. ..$ dims                : int [1:20] 1 2 3 4 5 6 7 8 9 10 ...
+##   .. .. .. .. ..$ reduction           : chr &quot;pca&quot;
+##   .. .. .. .. ..$ assay               : chr &quot;SCT&quot;
+##   .. .. .. .. ..$ slot                : chr &quot;data&quot;
+##   .. .. .. .. ..$ umap.method         : chr &quot;uwot&quot;
+##   .. .. .. .. ..$ return.model        : logi FALSE
+##   .. .. .. .. ..$ n.neighbors         : int 30
+##   .. .. .. .. ..$ n.components        : int 2
+##   .. .. .. .. ..$ metric              : chr &quot;cosine&quot;
+##   .. .. .. .. ..$ learning.rate       : num 1
+##   .. .. .. .. ..$ min.dist            : num 0.3
+##   .. .. .. .. ..$ spread              : num 1
+##   .. .. .. .. ..$ set.op.mix.ratio    : num 1
+##   .. .. .. .. ..$ local.connectivity  : int 1
+##   .. .. .. .. ..$ repulsion.strength  : num 1
+##   .. .. .. .. ..$ negative.sample.rate: int 5
+##   .. .. .. .. ..$ uwot.sgd            : logi FALSE
+##   .. .. .. .. ..$ seed.use            : int 42
+##   .. .. .. .. ..$ angular.rp.forest   : logi FALSE
+##   .. .. .. .. ..$ verbose             : logi TRUE
+##   .. .. .. .. ..$ reduction.name      : chr &quot;umap&quot;
+##   .. .. .. .. ..$ reduction.key       : chr &quot;UMAP_&quot;
+##   ..@ tools       :List of 1
+##   .. ..$ RunVelocity:List of 11
+##   .. .. ..$ cellKNN       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:239486] 0 402 497 608 1075 1286 1429 1627 2377 2396 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 26 52 78 104 130 156 182 208 234 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 9211 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:239486] 1 1 1 1 1 1 1 1 1 1 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ conv.nmat.norm:Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:22591316] 0 3 4 5 6 7 8 10 11 12 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 2754 5257 7902 9952 12515 14984 17454 20288 22263 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 3072 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:3072] &quot;ENSG00000228794.9&quot; &quot;ENSG00000221978.12&quot; &quot;ENSG00000242485.6&quot; &quot;ENSG00000160075.12&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:22591316] 0.091 0.091 0.0546 0.9831 0.0364 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ conv.emat.norm:Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:23152264] 0 1 2 3 4 5 6 8 9 10 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 2826 5289 8054 10279 13036 15730 18321 21041 23480 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 3072 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:3072] &quot;ENSG00000228794.9&quot; &quot;ENSG00000221978.12&quot; &quot;ENSG00000242485.6&quot; &quot;ENSG00000160075.12&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:23152264] 0.1422 0.0948 0.4028 0.2132 0.0711 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ gamma         : Named num [1:2175] 0.224 0.422 0.7 0.881 0.207 ...
+##   .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:2175] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. ..$ projected     :Formal class &#39;dgeMatrix&#39; [package &quot;Matrix&quot;] with 4 slots
+##   .. .. .. .. ..@ x       : num [1:20033925] 0.0314 0 0.5944 0 0.5277 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2175 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2175] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ current       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:2792612] 2 4 7 16 17 21 22 25 26 27 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 589 984 1419 1712 2209 2595 2680 3049 3372 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2175 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2175] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:2792612] 0.42 0.42 0.84 0.42 0.42 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ deltaE        :Formal class &#39;dgeMatrix&#39; [package &quot;Matrix&quot;] with 4 slots
+##   .. .. .. .. ..@ x       : num [1:20033925] 0.0353 -0.0161 0.2481 0 0.1731 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2175 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2175] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ deltaT        : num 1
+##   .. .. ..$ ko            :&#39;data.frame&#39;: 3072 obs. of  4 variables:
+##   .. .. .. ..$ o    : num [1:3072] 0.0198 0.0408 0.0125 0.0584 0.0444 ...
+##   .. .. .. ..$ g    : num [1:3072] 0.2238 0.0128 0.0384 -0.0439 0.4218 ...
+##   .. .. .. ..$ r    : num [1:3072] 0.4392 0.0968 0.1909 -0.0394 0.233 ...
+##   .. .. .. ..$ valid: logi [1:3072] TRUE FALSE FALSE FALSE TRUE TRUE ...
+##   .. .. ..$ mult          : num 1000
+##   .. .. ..$ kCells        : num 25</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use Seurat functions to complete the analysis </span>
+bm &lt;-<span class="st"> </span><span class="kw">as.Seurat</span>(<span class="dt">x =</span> ldat) <span class="co">#convert loom data to seurat</span>
+
+<span class="co"># Any additional steps of analysis get tagged onto your Seurat object</span>
+bm &lt;-<span class="st"> </span><span class="kw">SCTransform</span>(<span class="dt">object =</span> bm, <span class="dt">assay =</span> <span class="st">&quot;spliced&quot;</span>)
+bm &lt;-<span class="st"> </span><span class="kw">RunPCA</span>(<span class="dt">object =</span> bm, <span class="dt">verbose =</span> <span class="ot">FALSE</span>) <span class="co">#stored under reductions</span>
+bm &lt;-<span class="st"> </span><span class="kw">FindNeighbors</span>(<span class="dt">object =</span> bm, <span class="dt">dims =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>) <span class="co">#stored under graphs</span>
+bm &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(<span class="dt">object =</span> bm)
+bm &lt;-<span class="st"> </span><span class="kw">RunUMAP</span>(<span class="dt">object =</span> bm, <span class="dt">dims =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>)
+bm &lt;-<span class="st"> </span><span class="kw">RunVelocity</span>(<span class="dt">object =</span> bm, <span class="dt">deltaT =</span> <span class="dv">1</span>, <span class="dt">kCells =</span> <span class="dv">25</span>, <span class="dt">fit.quantile =</span> <span class="fl">0.02</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ident.colors &lt;-<span class="st"> </span>(scales<span class="op">::</span><span class="kw">hue_pal</span>())(<span class="dt">n =</span> <span class="kw">length</span>(<span class="dt">x =</span> <span class="kw">levels</span>(<span class="dt">x =</span> bm)))
+<span class="kw">names</span>(<span class="dt">x =</span> ident.colors) &lt;-<span class="st"> </span><span class="kw">levels</span>(<span class="dt">x =</span> bm)
+cell.colors &lt;-<span class="st"> </span>ident.colors[<span class="kw">Idents</span>(<span class="dt">object =</span> bm)]
+<span class="kw">names</span>(<span class="dt">x =</span> cell.colors) &lt;-<span class="st"> </span><span class="kw">colnames</span>(<span class="dt">x =</span> bm)
+
+<span class="co">#pdf(&quot;microglia_velocyto_plot.pdf&quot;, width = 9, height = 9)</span>
+<span class="kw">show.velocity.on.embedding.cor</span>(<span class="dt">emb =</span> <span class="kw">Embeddings</span>(<span class="dt">object =</span> bm, <span class="dt">reduction =</span> <span class="st">&quot;umap&quot;</span>), <span class="dt">vel =</span> <span class="kw">Tool</span>(<span class="dt">object =</span> bm, 
+    <span class="dt">slot =</span> <span class="st">&quot;RunVelocity&quot;</span>), <span class="dt">n =</span> <span class="dv">200</span>, <span class="dt">scale =</span> <span class="st">&quot;sqrt&quot;</span>, <span class="dt">cell.colors =</span> <span class="kw">ac</span>(<span class="dt">x =</span> cell.colors, <span class="dt">alpha =</span> <span class="fl">0.5</span>), 
+    <span class="dt">cex =</span> <span class="fl">0.8</span>, <span class="dt">arrow.scale =</span> <span class="dv">3</span>, <span class="dt">show.grid.flow =</span> <span class="ot">TRUE</span>, <span class="dt">min.grid.cell.mass =</span> <span class="fl">0.5</span>, <span class="dt">grid.n =</span> <span class="dv">40</span>, <span class="dt">arrow.lwd =</span> <span class="dv">1</span>, 
+    <span class="dt">do.par =</span> <span class="ot">FALSE</span>, <span class="dt">cell.border.alpha =</span> <span class="fl">0.1</span>)</code></pre></div>
+<p><img src="velocyto_files/figure-html/Plot%20of%20Velocity%20for%20Obj1-1.png" width="2400" /></p>
+<pre><code>## delta projections ... sqrt knn ... transition probs ... done
+## calculating arrows ... done
+## grid estimates ... grid.sd= 0.4179667  min.arrow.size= 0.008359335  max.grid.arrow.length= 0.05716041  done</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#dev.off()</span></code></pre></div>
+<div id="feature-plots" class="section level3">
+<h3>Feature Plots</h3>
+<p>In order to assess the clustering and velocity results, we observe the expression levels of previously identified features. These help us hypothesize which clusters are particular cell types. In this case, I visualized genes that were more highly expressed in homeostatic microglia and those more highly expressed in monocytes (according to prior analysis by previous rotation student Emily Kozik).</p>
+<p>The data is labeled with EnsemblID gene names rather than gene symbols. If you change those labels before making your Seurat object, you should not run into this issue. However, EnsemblID gene names and gene symbols often do not match at a 1:1 rate, so re-labeling them will likely lose information. The other option, which is used here, is to analyze using the EnsemblID names and then change the labels on output plots and tables to be gene symbols.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Feature Plots</span>
+<span class="kw">library</span>(ggpubr)
+
+<span class="co">#function to make multipannel feature plot</span>
+make_featurePlot &lt;-<span class="st"> </span><span class="cf">function</span>(ensembles, names) {
+  <span class="co">#create list object to hold plots</span>
+  plot_list =<span class="st"> </span><span class="kw">vector</span>(<span class="dt">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="dt">length =</span> <span class="kw">length</span>(ensembles))
+  
+  <span class="co">#initialize index</span>
+  index =<span class="st"> </span><span class="dv">1</span>
+  <span class="cf">for</span> (gene <span class="cf">in</span> ensembles) {
+    <span class="co">#make feature plot with labels</span>
+    featurePlot_func &lt;-<span class="st"> </span><span class="kw">FeaturePlot</span>(bm, <span class="dt">features =</span> gene, <span class="dt">reduction =</span> <span class="st">&#39;umap&#39;</span>,
+                                    <span class="dt">max.cutoff =</span> <span class="dv">2</span>, <span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">&quot;lightgrey&quot;</span>, <span class="st">&quot;darkblue&quot;</span>), 
+                                    <span class="dt">ncol =</span> <span class="dv">2</span>)
+    <span class="co">#this line is required to re-label the data with gene names instead of their ensembleIDs</span>
+    featurePlot_func =<span class="st"> </span>featurePlot_func <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">title =</span> names[index])
+    
+    <span class="co">#add plot to list</span>
+    plot_list[[index]] =<span class="st"> </span>featurePlot_func
+    
+    index =<span class="st"> </span>index <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
+  }
+  
+  <span class="co">#merge them using ggarrange</span>
+  arranged =<span class="st"> </span><span class="kw">ggarrange</span>(<span class="dt">plotlist =</span> plot_list)
+  
+  <span class="co">#return</span>
+  <span class="kw">return</span>(arranged)
+}
+
+<span class="co">#Homeostatic Gene Set</span>
+title =<span class="st"> &quot;Homeostatic Gene Set&quot;</span>
+ensemb =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ENSG00000168329.13&quot;</span>, <span class="st">&quot;ENSG00000171659.15&quot;</span>, <span class="st">&quot;ENSG00000169313.9&quot;</span>, <span class="st">&quot;ENSG00000181631.7&quot;</span>)
+names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CX3CR1&quot;</span>, <span class="st">&quot;GPR34&quot;</span>, <span class="st">&quot;P2RY12&quot;</span>, <span class="st">&quot;P2RY13&quot;</span>)
+figure_homeo =<span class="st"> </span><span class="kw">make_featurePlot</span>(ensemb, names)
+
+<span class="co">#annotate the figure</span>
+<span class="kw">annotate_figure</span>(figure_homeo, <span class="dt">top =</span> <span class="kw">text_grob</span>(title,
+                                        <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>,
+                                        <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>,
+                                        <span class="dt">size =</span> <span class="dv">16</span>)
+)</code></pre></div>
+<p><img src="velocyto_files/figure-html/Feature%20Plots-1.png" width="2400" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#other (ie monocyte markers)</span>
+title =<span class="st"> &quot;Monocyte Gene Set&quot;</span>
+ensemb =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ENSG00000204472.13&quot;</span>, <span class="st">&quot;ENSG00000173372.17&quot;</span>, <span class="st">&quot;ENSG00000011600.11&quot;</span>)
+names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AIF1&quot;</span>,<span class="st">&quot;C1QA&quot;</span>,<span class="st">&quot;TYROBP&quot;</span>)
+figure_other =<span class="st"> </span><span class="kw">make_featurePlot</span>(ensemb, names)
+
+<span class="co">#annotate the figure</span>
+<span class="kw">annotate_figure</span>(figure_other, <span class="dt">top =</span> <span class="kw">text_grob</span>(title,
+                                        <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>,
+                                        <span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>,
+                                        <span class="dt">size =</span> <span class="dv">16</span>)
+)</code></pre></div>
+<p><img src="velocyto_files/figure-html/Feature%20Plots-2.png" width="2400" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#save.image(file = paste(&quot;/hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/microglia_velocyto.RData&quot;, sep = &quot;&quot;))</span>
+<span class="co">#load(paste(&quot;/hpc/users/rosenm36/ad-omics/mynd-ad/single_cell_res/velocity_res/microglia_velocyto.RData&quot;, sep = &quot;&quot;))</span></code></pre></div>
+<p>The clustering results found in our initial analysis was not too similar to what was found in previous analyses. Adjusting the analysis so that it more closely resembles the previous analysis may lead to more comparable results.</p>
+</div>
+</div>
+<div id="exploring-parameters" class="section level2">
+<h2>Exploring Parameters</h2>
+<p>Several steps were changed in order to make the previous and current analyses more similar.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#read in the second rdata file which has the objects made/edited in chunks 14 and 16-21</span>
+<span class="kw">load</span>(<span class="st">&quot;velocytoRun2_log.RData&quot;</span>) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use Seurat functions to complete the analysis </span>
+bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">as.Seurat</span>(<span class="dt">x =</span> ldat) <span class="co">#convert loom data to seurat</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(bm_<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] &quot;Seurat&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;SeuratObject&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(bm_<span class="dv">2</span>)</code></pre></div>
+<pre><code>## Length  Class   Mode 
+##      1 Seurat     S4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(bm_<span class="dv">2</span>)</code></pre></div>
+<pre><code>## Formal class &#39;Seurat&#39; [package &quot;SeuratObject&quot;] with 13 slots
+##   ..@ assays      :List of 2
+##   .. ..$ spliced  :Formal class &#39;Assay&#39; [package &quot;SeuratObject&quot;] with 8 slots
+##   .. .. .. ..@ counts       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:8905876] 47 67 72 77 118 140 145 163 199 203 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 1907 3191 4627 5529 7143 8302 8554 9736 10783 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:8905876] 1 1 1 1 7 1 1 2 1 2 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ data         :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:8905876] 47 67 72 77 118 140 145 163 199 203 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 1907 3191 4627 5529 7143 8302 8554 9736 10783 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:8905876] 1.12 1.12 1.12 1.12 2.74 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ scale.data   : num [1:58367, 1:9211] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. ..@ key          : chr &quot;spliced_&quot;
+##   .. .. .. ..@ assay.orig   : NULL
+##   .. .. .. ..@ var.features : chr [1:2000] &quot;ENSG00000287001.1&quot; &quot;ENSG00000143546.10&quot; &quot;ENSG00000163220.11&quot; &quot;ENSG00000012223.12&quot; ...
+##   .. .. .. ..@ meta.features:&#39;data.frame&#39;:   58367 obs. of  5 variables:
+##   .. .. .. .. ..$ vst.mean                 : num [1:58367] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. .. .. .. ..$ vst.variance             : num [1:58367] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. .. .. .. ..$ vst.variance.expected    : num [1:58367] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. .. .. .. ..$ vst.variance.standardized: num [1:58367] 0 0 0 0 0 0 0 0 0 0 ...
+##   .. .. .. .. ..$ vst.variable             : logi [1:58367] FALSE FALSE FALSE FALSE FALSE FALSE ...
+##   .. .. .. ..@ misc         : list()
+##   .. ..$ unspliced:Formal class &#39;Assay&#39; [package &quot;SeuratObject&quot;] with 8 slots
+##   .. .. .. ..@ counts       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:11666203] 7 8 48 60 72 144 148 157 163 165 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 2453 3953 5868 7008 9019 10704 11155 13023 14066 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:11666203] 1 1 2 2 1 1 1 2 1 2 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ data         :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. .. ..@ i       : int [1:11666203] 7 8 48 60 72 144 148 157 163 165 ...
+##   .. .. .. .. .. ..@ p       : int [1:9212] 0 2453 3953 5868 7008 9019 10704 11155 13023 14066 ...
+##   .. .. .. .. .. ..@ Dim     : int [1:2] 58367 9211
+##   .. .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. .. ..$ : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..@ x       : num [1:11666203] 1 1 2 2 1 1 1 2 1 2 ...
+##   .. .. .. .. .. ..@ factors : list()
+##   .. .. .. ..@ scale.data   : num[0 , 0 ] 
+##   .. .. .. ..@ key          : chr &quot;unspliced_&quot;
+##   .. .. .. ..@ assay.orig   : NULL
+##   .. .. .. ..@ var.features : logi(0) 
+##   .. .. .. ..@ meta.features:&#39;data.frame&#39;:   58367 obs. of  0 variables
+##   .. .. .. ..@ misc         : list()
+##   ..@ meta.data   :&#39;data.frame&#39;: 9211 obs. of  7 variables:
+##   .. ..$ orig.ident         : Factor w/ 1 level &quot;SeuratProject&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##   .. ..$ nCount_spliced     : num [1:9211] 4816 2181 2597 1506 2942 ...
+##   .. ..$ nFeature_spliced   : int [1:9211] 1907 1284 1436 902 1614 1159 252 1182 1047 590 ...
+##   .. ..$ nCount_unspliced   : num [1:9211] 5148 2476 3850 1768 3818 ...
+##   .. ..$ nFeature_unspliced : int [1:9211] 2453 1500 1915 1140 2011 1685 451 1868 1043 604 ...
+##   .. ..$ spliced_snn_res.0.1: Factor w/ 5 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 2 1 1 3 1 2 1 2 1 1 ...
+##   .. ..$ seurat_clusters    : Factor w/ 5 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 2 1 1 3 1 2 1 2 1 1 ...
+##   ..@ active.assay: chr &quot;spliced&quot;
+##   ..@ active.ident: Factor w/ 5 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 2 1 1 3 1 2 1 2 1 1 ...
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   ..@ graphs      :List of 2
+##   .. ..$ spliced_nn :Formal class &#39;Graph&#39; [package &quot;SeuratObject&quot;] with 7 slots
+##   .. .. .. ..@ assay.used: chr &quot;spliced&quot;
+##   .. .. .. ..@ i         : int [1:184220] 0 3436 9056 1 331 1443 1525 1709 1714 1990 ...
+##   .. .. .. ..@ p         : int [1:9212] 0 3 19 30 42 67 92 126 162 182 ...
+##   .. .. .. ..@ Dim       : int [1:2] 9211 9211
+##   .. .. .. ..@ Dimnames  :List of 2
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. ..@ x         : num [1:184220] 1 1 1 1 1 1 1 1 1 1 ...
+##   .. .. .. ..@ factors   : list()
+##   .. ..$ spliced_snn:Formal class &#39;Graph&#39; [package &quot;SeuratObject&quot;] with 7 slots
+##   .. .. .. ..@ assay.used: chr &quot;spliced&quot;
+##   .. .. .. ..@ i         : int [1:606715] 0 504 608 983 1530 1731 2087 2127 2142 2289 ...
+##   .. .. .. ..@ p         : int [1:9212] 0 38 81 144 214 272 330 426 507 584 ...
+##   .. .. .. ..@ Dim       : int [1:2] 9211 9211
+##   .. .. .. ..@ Dimnames  :List of 2
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. ..@ x         : num [1:606715] 1 0.0811 0.0811 0.1765 0.0811 ...
+##   .. .. .. ..@ factors   : list()
+##   ..@ neighbors   : list()
+##   ..@ reductions  :List of 2
+##   .. ..$ pca :Formal class &#39;DimReduc&#39; [package &quot;SeuratObject&quot;] with 9 slots
+##   .. .. .. ..@ cell.embeddings           : num [1:9211, 1:50] -3.849 -0.412 1.232 -0.413 2.05 ...
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:50] &quot;PC_1&quot; &quot;PC_2&quot; &quot;PC_3&quot; &quot;PC_4&quot; ...
+##   .. .. .. ..@ feature.loadings          : num [1:2000, 1:50] -0.01931 -0.03284 -0.03169 -0.00437 -0.0489 ...
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:2000] &quot;ENSG00000287001.1&quot; &quot;ENSG00000143546.10&quot; &quot;ENSG00000163220.11&quot; &quot;ENSG00000012223.12&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:50] &quot;PC_1&quot; &quot;PC_2&quot; &quot;PC_3&quot; &quot;PC_4&quot; ...
+##   .. .. .. ..@ feature.loadings.projected: num[0 , 0 ] 
+##   .. .. .. ..@ assay.used                : chr &quot;spliced&quot;
+##   .. .. .. ..@ global                    : logi FALSE
+##   .. .. .. ..@ stdev                     : num [1:50] 5.16 3.79 2.92 2.65 2.3 ...
+##   .. .. .. ..@ key                       : chr &quot;PC_&quot;
+##   .. .. .. ..@ jackstraw                 :Formal class &#39;JackStrawData&#39; [package &quot;SeuratObject&quot;] with 4 slots
+##   .. .. .. .. .. ..@ empirical.p.values     : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ fake.reduction.scores  : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ empirical.p.values.full: num[0 , 0 ] 
+##   .. .. .. .. .. ..@ overall.p.values       : num[0 , 0 ] 
+##   .. .. .. ..@ misc                      :List of 1
+##   .. .. .. .. ..$ total.variance: num 862
+##   .. ..$ umap:Formal class &#39;DimReduc&#39; [package &quot;SeuratObject&quot;] with 9 slots
+##   .. .. .. ..@ cell.embeddings           : num [1:9211, 1:2] 1.96 2.83 -1.46 -6.14 -1.53 ...
+##   .. .. .. .. ..- attr(*, &quot;scaled:center&quot;)= num [1:2] -2.02 -1.83
+##   .. .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:2] &quot;UMAP_1&quot; &quot;UMAP_2&quot;
+##   .. .. .. ..@ feature.loadings          : num[0 , 0 ] 
+##   .. .. .. ..@ feature.loadings.projected: num[0 , 0 ] 
+##   .. .. .. ..@ assay.used                : chr &quot;spliced&quot;
+##   .. .. .. ..@ global                    : logi TRUE
+##   .. .. .. ..@ stdev                     : num(0) 
+##   .. .. .. ..@ key                       : chr &quot;UMAP_&quot;
+##   .. .. .. ..@ jackstraw                 :Formal class &#39;JackStrawData&#39; [package &quot;SeuratObject&quot;] with 4 slots
+##   .. .. .. .. .. ..@ empirical.p.values     : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ fake.reduction.scores  : num[0 , 0 ] 
+##   .. .. .. .. .. ..@ empirical.p.values.full: num[0 , 0 ] 
+##   .. .. .. .. .. ..@ overall.p.values       : num[0 , 0 ] 
+##   .. .. .. ..@ misc                      : list()
+##   ..@ images      : list()
+##   ..@ project.name: chr &quot;SeuratProject&quot;
+##   ..@ misc        : list()
+##   ..@ version     :Classes &#39;package_version&#39;, &#39;numeric_version&#39;  hidden list of 1
+##   .. ..$ : int [1:3] 4 0 0
+##   ..@ commands    :List of 7
+##   .. ..$ NormalizeData.spliced       :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;NormalizeData.spliced&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-02 13:34:19&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr [1:2] &quot;NormalizeData(bm_2, normalization.method = \&quot;LogNormalize\&quot;, &quot; &quot;    scale.factor = 10000)&quot;
+##   .. .. .. ..@ params     :List of 5
+##   .. .. .. .. ..$ assay               : chr &quot;spliced&quot;
+##   .. .. .. .. ..$ normalization.method: chr &quot;LogNormalize&quot;
+##   .. .. .. .. ..$ scale.factor        : num 10000
+##   .. .. .. .. ..$ margin              : num 1
+##   .. .. .. .. ..$ verbose             : logi TRUE
+##   .. ..$ FindVariableFeatures.spliced:Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;FindVariableFeatures.spliced&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-02 13:37:15&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr &quot;FindVariableFeatures(bm_2, selection.method = \&quot;vst\&quot;, nfeatures = 2000)&quot;
+##   .. .. .. ..@ params     :List of 12
+##   .. .. .. .. ..$ assay              : chr &quot;spliced&quot;
+##   .. .. .. .. ..$ selection.method   : chr &quot;vst&quot;
+##   .. .. .. .. ..$ loess.span         : num 0.3
+##   .. .. .. .. ..$ clip.max           : chr &quot;auto&quot;
+##   .. .. .. .. ..$ mean.function      :function (mat, display_progress)  
+##   .. .. .. .. ..$ dispersion.function:function (mat, display_progress)  
+##   .. .. .. .. ..$ num.bin            : num 20
+##   .. .. .. .. ..$ binning.method     : chr &quot;equal_width&quot;
+##   .. .. .. .. ..$ nfeatures          : num 2000
+##   .. .. .. .. ..$ mean.cutoff        : num [1:2] 0.1 8
+##   .. .. .. .. ..$ dispersion.cutoff  : num [1:2] 1 Inf
+##   .. .. .. .. ..$ verbose            : logi TRUE
+##   .. ..$ ScaleData.spliced           :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;ScaleData.spliced&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-02 13:44:05&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr &quot;ScaleData(bm_2, features = all.genes_bm_2)&quot;
+##   .. .. .. ..@ params     :List of 10
+##   .. .. .. .. ..$ features          : chr [1:58367] &quot;ENSG00000277400.1&quot; &quot;ENSG00000274847.1&quot; &quot;ENSG00000276256.1&quot; &quot;ENSG00000278198.1&quot; ...
+##   .. .. .. .. ..$ assay             : chr &quot;spliced&quot;
+##   .. .. .. .. ..$ model.use         : chr &quot;linear&quot;
+##   .. .. .. .. ..$ use.umi           : logi FALSE
+##   .. .. .. .. ..$ do.scale          : logi TRUE
+##   .. .. .. .. ..$ do.center         : logi TRUE
+##   .. .. .. .. ..$ scale.max         : num 10
+##   .. .. .. .. ..$ block.size        : num 1000
+##   .. .. .. .. ..$ min.cells.to.block: num 3000
+##   .. .. .. .. ..$ verbose           : logi TRUE
+##   .. ..$ RunPCA.spliced              :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;RunPCA.spliced&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-02 13:45:57&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr [1:2] &quot;RunPCA(object = bm_2, features = VariableFeatures(bm_2), &quot; &quot;    verbose = FALSE)&quot;
+##   .. .. .. ..@ params     :List of 11
+##   .. .. .. .. ..$ assay          : chr &quot;spliced&quot;
+##   .. .. .. .. ..$ features       : chr [1:2000] &quot;ENSG00000287001.1&quot; &quot;ENSG00000143546.10&quot; &quot;ENSG00000163220.11&quot; &quot;ENSG00000012223.12&quot; ...
+##   .. .. .. .. ..$ npcs           : num 50
+##   .. .. .. .. ..$ rev.pca        : logi FALSE
+##   .. .. .. .. ..$ weight.by.var  : logi TRUE
+##   .. .. .. .. ..$ verbose        : logi FALSE
+##   .. .. .. .. ..$ ndims.print    : int [1:5] 1 2 3 4 5
+##   .. .. .. .. ..$ nfeatures.print: num 30
+##   .. .. .. .. ..$ reduction.name : chr &quot;pca&quot;
+##   .. .. .. .. ..$ reduction.key  : chr &quot;PC_&quot;
+##   .. .. .. .. ..$ seed.use       : num 42
+##   .. ..$ FindNeighbors.spliced.pca   :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;FindNeighbors.spliced.pca&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-02 13:46:15&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr &quot;FindNeighbors(object = bm_2)&quot;
+##   .. .. .. ..@ params     :List of 17
+##   .. .. .. .. ..$ reduction      : chr &quot;pca&quot;
+##   .. .. .. .. ..$ dims           : int [1:10] 1 2 3 4 5 6 7 8 9 10
+##   .. .. .. .. ..$ assay          : chr &quot;spliced&quot;
+##   .. .. .. .. ..$ k.param        : num 20
+##   .. .. .. .. ..$ return.neighbor: logi FALSE
+##   .. .. .. .. ..$ compute.SNN    : logi TRUE
+##   .. .. .. .. ..$ prune.SNN      : num 0.0667
+##   .. .. .. .. ..$ nn.method      : chr &quot;annoy&quot;
+##   .. .. .. .. ..$ n.trees        : num 50
+##   .. .. .. .. ..$ annoy.metric   : chr &quot;euclidean&quot;
+##   .. .. .. .. ..$ nn.eps         : num 0
+##   .. .. .. .. ..$ verbose        : logi TRUE
+##   .. .. .. .. ..$ force.recalc   : logi FALSE
+##   .. .. .. .. ..$ do.plot        : logi FALSE
+##   .. .. .. .. ..$ graph.name     : chr [1:2] &quot;spliced_nn&quot; &quot;spliced_snn&quot;
+##   .. .. .. .. ..$ l2.norm        : logi FALSE
+##   .. .. .. .. ..$ cache.index    : logi FALSE
+##   .. ..$ FindClusters                :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;FindClusters&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-02 13:46:29&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr &quot;FindClusters(object = bm_2, resolution = 0.1)&quot;
+##   .. .. .. ..@ params     :List of 10
+##   .. .. .. .. ..$ graph.name      : chr &quot;spliced_snn&quot;
+##   .. .. .. .. ..$ modularity.fxn  : num 1
+##   .. .. .. .. ..$ resolution      : num 0.1
+##   .. .. .. .. ..$ method          : chr &quot;matrix&quot;
+##   .. .. .. .. ..$ algorithm       : num 1
+##   .. .. .. .. ..$ n.start         : num 10
+##   .. .. .. .. ..$ n.iter          : num 10
+##   .. .. .. .. ..$ random.seed     : num 0
+##   .. .. .. .. ..$ group.singletons: logi TRUE
+##   .. .. .. .. ..$ verbose         : logi TRUE
+##   .. ..$ RunUMAP.spliced.pca         :Formal class &#39;SeuratCommand&#39; [package &quot;SeuratObject&quot;] with 5 slots
+##   .. .. .. ..@ name       : chr &quot;RunUMAP.spliced.pca&quot;
+##   .. .. .. ..@ time.stamp : POSIXct[1:1], format: &quot;2021-07-02 13:58:01&quot;
+##   .. .. .. ..@ assay.used : chr &quot;spliced&quot;
+##   .. .. .. ..@ call.string: chr &quot;RunUMAP(object = bm_2, dims = 1:13)&quot;
+##   .. .. .. ..@ params     :List of 22
+##   .. .. .. .. ..$ dims                : int [1:13] 1 2 3 4 5 6 7 8 9 10 ...
+##   .. .. .. .. ..$ reduction           : chr &quot;pca&quot;
+##   .. .. .. .. ..$ assay               : chr &quot;spliced&quot;
+##   .. .. .. .. ..$ slot                : chr &quot;data&quot;
+##   .. .. .. .. ..$ umap.method         : chr &quot;uwot&quot;
+##   .. .. .. .. ..$ return.model        : logi FALSE
+##   .. .. .. .. ..$ n.neighbors         : int 30
+##   .. .. .. .. ..$ n.components        : int 2
+##   .. .. .. .. ..$ metric              : chr &quot;cosine&quot;
+##   .. .. .. .. ..$ learning.rate       : num 1
+##   .. .. .. .. ..$ min.dist            : num 0.3
+##   .. .. .. .. ..$ spread              : num 1
+##   .. .. .. .. ..$ set.op.mix.ratio    : num 1
+##   .. .. .. .. ..$ local.connectivity  : int 1
+##   .. .. .. .. ..$ repulsion.strength  : num 1
+##   .. .. .. .. ..$ negative.sample.rate: int 5
+##   .. .. .. .. ..$ uwot.sgd            : logi FALSE
+##   .. .. .. .. ..$ seed.use            : int 42
+##   .. .. .. .. ..$ angular.rp.forest   : logi FALSE
+##   .. .. .. .. ..$ verbose             : logi TRUE
+##   .. .. .. .. ..$ reduction.name      : chr &quot;umap&quot;
+##   .. .. .. .. ..$ reduction.key       : chr &quot;UMAP_&quot;
+##   ..@ tools       :List of 1
+##   .. ..$ RunVelocity:List of 11
+##   .. .. ..$ cellKNN       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:239486] 0 7 356 784 1244 1709 2211 2228 2274 3623 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 26 52 78 104 130 156 182 208 234 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 9211 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:239486] 1 1 1 1 1 1 1 1 1 1 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ conv.nmat.norm:Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:21242468] 0 1 2 3 4 5 6 7 8 9 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 2790 5430 8104 9884 12408 14902 16441 19231 21724 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2984 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2984] &quot;ENSG00000228794.9&quot; &quot;ENSG00000221978.12&quot; &quot;ENSG00000242485.6&quot; &quot;ENSG00000160075.12&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:21242468] 0.0172 0.086 0.0172 0.086 0.0688 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ conv.emat.norm:Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:21407523] 0 1 2 3 4 5 6 7 8 9 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 2706 5165 7888 9778 12402 14995 16703 19412 22067 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2984 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2984] &quot;ENSG00000228794.9&quot; &quot;ENSG00000221978.12&quot; &quot;ENSG00000242485.6&quot; &quot;ENSG00000160075.12&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:21407523] 0.0508 0.1588 0.2839 0.195 0.2857 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ gamma         : Named num [1:2016] 0.172 0.297 0.195 0.788 0.111 ...
+##   .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:2016] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. ..$ projected     :Formal class &#39;dgeMatrix&#39; [package &quot;Matrix&quot;] with 4 slots
+##   .. .. .. .. ..@ x       : num [1:18569376] 0 0 0.7776 0.0109 0.8224 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2016 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2016] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ current       :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots
+##   .. .. .. .. ..@ i       : int [1:2618821] 2 4 7 17 21 22 24 27 28 29 ...
+##   .. .. .. .. ..@ p       : int [1:9212] 0 531 890 1289 1576 2031 2405 2481 2827 3142 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2016 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2016] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ x       : num [1:2618821] 0.861 0.861 1.257 0.861 1.516 ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ deltaE        :Formal class &#39;dgeMatrix&#39; [package &quot;Matrix&quot;] with 4 slots
+##   .. .. .. .. ..@ x       : num [1:18569376] -0.00534 -0.06848 -0.01323 0.01185 0.0356 ...
+##   .. .. .. .. ..@ Dim     : int [1:2] 2016 9211
+##   .. .. .. .. ..@ Dimnames:List of 2
+##   .. .. .. .. .. ..$ : chr [1:2016] &quot;ENSG00000228794.9&quot; &quot;ENSG00000008130.15&quot; &quot;ENSG00000078369.18&quot; &quot;ENSG00000069424.15&quot; ...
+##   .. .. .. .. .. ..$ : chr [1:9211] &quot;AAACCCAAGGTGCCTC&quot; &quot;AAACCCACAGACTGCC&quot; &quot;AAACCCAGTTAAGTCC&quot; &quot;AAACCCATCGCAATTG&quot; ...
+##   .. .. .. .. ..@ factors : list()
+##   .. .. ..$ deltaT        : num 1
+##   .. .. ..$ ko            :&#39;data.frame&#39;: 2984 obs. of  4 variables:
+##   .. .. .. ..$ o    : num [1:2984] 0.0143 0.0529 0.0164 0.0562 0.0631 ...
+##   .. .. .. ..$ g    : num [1:2984] 0.17201 0.02339 -0.00979 -0.02019 0.29705 ...
+##   .. .. .. ..$ r    : num [1:2984] 0.497 0.0643 0.0089 -0.0352 0.1454 ...
+##   .. .. .. ..$ valid: logi [1:2984] TRUE FALSE FALSE FALSE TRUE TRUE ...
+##   .. .. ..$ mult          : num 1000
+##   .. .. ..$ kCells        : num 25</code></pre>
+<div id="normalization-and-scaling" class="section level3">
+<h3>Normalization and Scaling</h3>
+<p>The normalization technique was changed from SCTransform to LogNormalization. This means using log normalization followed by scaling the data based on variable features. This normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor, and log-transforms the result. The scaling then shifts the expression of each gene so that the mean expression across cells is 0 and scales the expression of each gene so that the variance across cells is 1, giving equal weight to genes in downstream analyses so that highly-expressed genes do not dominate. Also, note that in previous analysis of this data, the scale command included a vars.to.regress parameter based on the percent.mt and nCount_RNA metadata information. Our current analysis does not have such metadata information included.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">NormalizeData</span>(bm_<span class="dv">2</span>, <span class="dt">normalization.method =</span> <span class="st">&quot;LogNormalize&quot;</span>, <span class="dt">scale.factor =</span> <span class="dv">10000</span>)
+bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">FindVariableFeatures</span>(bm_<span class="dv">2</span>, <span class="dt">selection.method =</span> <span class="st">&quot;vst&quot;</span>, <span class="dt">nfeatures =</span> <span class="dv">2000</span>) <span class="co">#need to do this to run PCA</span>
+all.genes_bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">rownames</span>(bm_<span class="dv">2</span>) 
+bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(bm_<span class="dv">2</span>, <span class="dt">features =</span> all.genes_bm_<span class="dv">2</span>) <span class="co">#,vars.to.regress = c(&quot;percent.mt&quot;,&quot;nCount_RNA&quot;) do I have access to this info? </span></code></pre></div>
+</div>
+<div id="pca" class="section level3">
+<h3>PCA</h3>
+<p>The PCA parameters were changed to explicitly use variable features. The default behavior of PCA runs using the variable features for the Assay. Using the SCTransform method, I did not have to explicitly specify the variable features. When using LogNormalization and scaling, I was prompted to specify variable features for this command.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">RunPCA</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>, <span class="dt">features =</span> <span class="kw">VariableFeatures</span>(bm_<span class="dv">2</span>), <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</code></pre></div>
+</div>
+<div id="findneighbors-and-findclusters" class="section level3">
+<h3>FindNeighbors and FindClusters</h3>
+<p>FindNeighbors was changed to run on default parameters.</p>
+<p>The resolution was changed to 0.1 for FindClusters, which parallels previous analysis and should results in a smaller number of communities. A resolution parameter value above 1.0 obtains a larger number of communities and below obtains smaller number of communities or clusters.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">FindNeighbors</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>) <span class="co">#default is dim = 1:10</span>
+bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>, <span class="dt">resolution =</span> <span class="fl">0.1</span>) <span class="co">#default is resolution = 0.8</span></code></pre></div>
+</div>
+<div id="umap" class="section level3">
+<h3>UMAP</h3>
+<p>An elbow plot was created to evaluate how many PCs are needed to capture the majority of variation in the data. The elbow is vaguely defined as where the plot angles to flatten horizontally, suggesting a drop-off in standard deviation and our threshold. Obviously, this is a very qualitative measure and other methods can be used to qualitatively create a threshold. Based on our plot, it seemed most variation is accounted for by PCs 1 to 13. Therefore, RunUMAP was changed to use the first 13 PCs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">RunUMAP</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>, <span class="dt">dims =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">13</span>) <span class="co">#default is 1:5</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#check for # of PCs to use in UMAP </span>
+<span class="kw">ElbowPlot</span>(bm_<span class="dv">2</span>)</code></pre></div>
+<p><img src="velocyto_files/figure-html/Plots%20for%20UMAP-1.png" width="1200" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#check what the UMAP looks like </span>
+<span class="kw">DimPlot</span>(bm_<span class="dv">2</span>, <span class="dt">reduction =</span> <span class="st">&#39;umap&#39;</span>)</code></pre></div>
+<p><img src="velocyto_files/figure-html/Plots%20for%20UMAP-2.png" width="1200" /></p>
+</div>
+<div id="velocity" class="section level3">
+<h3>Velocity</h3>
+<p>The <a href="https://rdrr.io/github/satijalab/seurat-wrappers/man/RunVelocity.html">RunVelocity command</a> requires an object with information on the spliced and unspliced reads. You can also specify which reduction method the command should use, with the default being PCA. It calls on the velocyto command 'gene.relative.velocity.estimates'.</p>
+<p>Some key parameters for this method are described <a href="https://github.com/velocyto-team/velocyto.R/blob/master/R/momentum_routines.R">here</a> and summarized below:</p>
+<ul>
+<li>deltaT - the amount of time to project the cell forward; default = 1</li>
+<li>kCells - number of k nearest neighbors (NN) to use in slope calculation smoothing; default = 10</li>
+<li>fit.quantile - perform gamma fit on a percentage of top/bottom quantiles of expression magnitudes; default = 0.02
+<ul>
+<li>recommended to do if can afford to do kNN smoothing</li>
+<li>ex: 0.02 means top/bottom 2% expression quantiles</li>
+</ul></li>
+<li>diagonal.quantiles - whether extreme quantiles should be computed diagonally</li>
+<li>min.nmat.emat.correlation - minimum required Spearman rank correlation between nascent (unspliced) and exonic (spliced) counts of a gene; default = 0.05</li>
+<li>min.nmat.emat.slope - minimum slope of unspliced~spliced regression; default = 0.05</li>
+<li>since spliced RNA is a processed form of unspliced RNA, it follows that unspliced and spliced expression should be generally positively correlated across a population of cells; this is why the default value is positive and &gt;0</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bm_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">RunVelocity</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>, <span class="dt">deltaT =</span> <span class="dv">1</span>, <span class="dt">kCells =</span> <span class="dv">25</span>, <span class="dt">fit.quantile =</span> <span class="fl">0.02</span>) <span class="co">#note to self: go back and check parameters for this</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ident.colors &lt;-<span class="st"> </span>(scales<span class="op">::</span><span class="kw">hue_pal</span>())(<span class="dt">n =</span> <span class="kw">length</span>(<span class="dt">x =</span> <span class="kw">levels</span>(<span class="dt">x =</span> bm_<span class="dv">2</span>)))
+<span class="kw">names</span>(<span class="dt">x =</span> ident.colors) &lt;-<span class="st"> </span><span class="kw">levels</span>(<span class="dt">x =</span> bm_<span class="dv">2</span>)
+cell.colors &lt;-<span class="st"> </span>ident.colors[<span class="kw">Idents</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>)]
+<span class="kw">names</span>(<span class="dt">x =</span> cell.colors) &lt;-<span class="st"> </span><span class="kw">colnames</span>(<span class="dt">x =</span> bm_<span class="dv">2</span>)
+
+<span class="co">#pdf(&quot;microglia_velocyto_newParams_plot.pdf&quot;, width = 9, height = 9)</span>
+<span class="kw">show.velocity.on.embedding.cor</span>(<span class="dt">emb =</span> <span class="kw">Embeddings</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>, <span class="dt">reduction =</span> <span class="st">&quot;umap&quot;</span>), <span class="dt">vel =</span> <span class="kw">Tool</span>(<span class="dt">object =</span> bm_<span class="dv">2</span>, 
+    <span class="dt">slot =</span> <span class="st">&quot;RunVelocity&quot;</span>), <span class="dt">n =</span> <span class="dv">200</span>, <span class="dt">scale =</span> <span class="st">&quot;sqrt&quot;</span>, <span class="dt">cell.colors =</span> <span class="kw">ac</span>(<span class="dt">x =</span> cell.colors, <span class="dt">alpha =</span> <span class="fl">0.5</span>), 
+    <span class="dt">cex =</span> <span class="fl">0.8</span>, <span class="dt">arrow.scale =</span> <span class="dv">3</span>, <span class="dt">show.grid.flow =</span> <span class="ot">TRUE</span>, <span class="dt">min.grid.cell.mass =</span> <span class="fl">0.5</span>, <span class="dt">grid.n =</span> <span class="dv">40</span>, <span class="dt">arrow.lwd =</span> <span class="dv">1</span>, 
+    <span class="dt">do.par =</span> <span class="ot">FALSE</span>, <span class="dt">cell.border.alpha =</span> <span class="fl">0.1</span>)</code></pre></div>
+<p><img src="velocyto_files/figure-html/Plot%20Velocity%20with%20New%20Parameters-1.png" width="2400" /></p>
+<pre><code>## delta projections ... sqrt knn ... transition probs ... done
+## calculating arrows ... done
+## grid estimates ... grid.sd= 0.3864034  min.arrow.size= 0.007728068  max.grid.arrow.length= 0.05716041  done</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#dev.off()</span></code></pre></div>
+</div>
+<div id="velocyto-feature-plots" class="section level3 tabset tabset-fade tabset-pills">
+<h3>Velocyto Feature Plots</h3>
+<p>In order to assess the clustering and velocity results, we observe both the spliced and unspliced expression levels of previously identified features. These help us hypothesize which clusters are particular cell types. In this case, I visualized genes that were more highly expressed in homeostatic microglia and those more highly expressed in monocytes (according to prior analysis by previous rotation student Emily Kozik).</p>
+<p>Additionally, I looked at plots for all of the genes in the Patir list that were detected as both spliced and unspliced transcripts. We have to prepare the Patir list for our analysis by merging with the gencode reference, ensuring we have the conversion between ensemblID and gene symbols.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Convert EnsemblID and Gene Symbols </span>
+##get conversion table for Gencode 30
+gencode_<span class="dv">30</span> =<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;./ens.geneid.gencode.v30&quot;</span>, <span class="dt">header =</span> T, <span class="dt">stringsAsFactors =</span> F)
+<span class="kw">colnames</span>(gencode_<span class="dv">30</span>) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ensembl&quot;</span>,<span class="st">&quot;symbol&quot;</span>)
+##load modules information
+geneList =<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;./Patir_core_249g.txt&quot;</span>, 
+                      <span class="dt">header =</span> T, <span class="dt">stringsAsFactors =</span> F, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+##merge
+mergedIds =<span class="st"> </span><span class="kw">merge</span>(geneList,gencode_<span class="dv">30</span>, <span class="dt">by =</span> <span class="st">&quot;symbol&quot;</span>)
+
+##write to file
+<span class="kw">head</span>(mergedIds)</code></pre></div>
+<pre><code>##   symbol                                description        biological_process
+## 1  ABCC4 ATP binding cassette subfamily C member 4     Metabolism/homeostasis
+## 2   ABI3                       ABI family member 3  Cytoskeletal organisation
+## 3   ACY3                            Aminoacylase 3     Metabolism/homeostasis
+## 4 ADAM28           ADAM metallopeptidase domain 28           Cell interaction
+## 5  ADAP2             ArfGAP with dual PH domains 2  Cytoskeletal organisation
+## 6  ADCY7                       Adenylate cyclase 7     Metabolism/homeostasis
+##              ensembl
+## 1 ENSG00000125257.15
+## 2  ENSG00000108798.9
+## 3  ENSG00000132744.8
+## 4 ENSG00000042980.12
+## 5 ENSG00000184060.11
+## 6 ENSG00000121281.12</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#write.table(x = mergedIds, file = &quot;/sc/arion/projects/ad-omics/mynd-ad/single_cell_res/velocity_res/Patir_core_ref.txt&quot;,</span>
+            <span class="co">#quote = F, row.names = F, sep = &quot;\t&quot;)</span>
+
+##check conversion success 
+<span class="kw">dim</span>(geneList)</code></pre></div>
+<pre><code>## [1] 249   3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(mergedIds)</code></pre></div>
+<pre><code>## [1] 246   4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">geneList[<span class="op">!</span><span class="st"> </span>geneList<span class="op">$</span>symbol <span class="op">%in%</span><span class="st"> </span>mergedIds<span class="op">$</span>symbol ,]</code></pre></div>
+<pre><code>##       symbol                                            description
+## 71   FAM105A          Family with sequence similarity 105 member A 
+## 108 HLA-DRB3 Major histocompatibility complex, class II, DR beta 3 
+## 109 HLA-DRB4 Major histocompatibility complex, class II, DR beta 4 
+## 224    TGFB1                     Transforming growth factor beta 1 
+##     biological_process
+## 71     Uncharacterized
+## 108  Antigen signaling
+## 109  Antigen signaling
+## 224 Cytokine signaling</code></pre>
+<p>The resultant plots show four different representations of the data focusing on the spliced and unspliced reads. From left to right:</p>
+<ol style="list-style-type: decimal">
+<li>Shows the amount of spliced count abundance for a particular gene, with the deepest red representing the most expression.</li>
+<li>Shows the amount of unspliced count abundance for a particular gene, with the deepest red representing the most expression.</li>
+<li>Is called an unspliced-spliced phase portrait. It shows the ratio of unspliced and spliced count abundance for a particular gene compared to the steady state of expression, represented by a dashed line. The colors correspond to cluster colors in a TSNE or UMAP.</li>
+<li>Shows unspliced count residuals based on the estimated γ fit, with positive residuals indicating expected upregulation, and negative residuals indicating expected downregulation of a gene.</li>
+</ol>
+<ul>
+<li>This measure is the basis of the subsequent velocity estimates</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Fitting of individual genes can be visualized using “show.gene” option. To save time, we’ll pass previously-calculated velocity (rvel.qf) to save calculation time:</span>
+velocytoFeaturePlot &lt;-<span class="st"> </span><span class="cf">function</span>(object, ensembles, names){
+  index =<span class="st"> </span><span class="dv">1</span>
+  
+  ensembles =<span class="st"> </span>ensembles[ensembles <span class="op">%in%</span><span class="st"> </span><span class="kw">rownames</span>(object<span class="op">$</span>unspliced<span class="op">@</span>data)]
+  
+  <span class="cf">for</span>(gene <span class="cf">in</span> ensembles){
+    <span class="co">#only make a plot for genes with some unspliced reads</span>
+    <span class="cf">if</span>(<span class="kw">sum</span>(object<span class="op">$</span>unspliced[gene]<span class="op">@</span>p) <span class="op">==</span><span class="st"> </span><span class="dv">0</span>){
+      <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;There are no unspliced reads for &quot;</span>, gene, <span class="st">&quot; or &quot;</span>, names[index]))
+    }
+    <span class="cf">else</span>{
+    <span class="kw">print</span>(<span class="kw">paste0</span>(<span class="st">&quot;Plot for &quot;</span>, gene, <span class="st">&quot; or &quot;</span>, names[index]))
+    
+    <span class="co">#make plot</span>
+    <span class="kw">gene.relative.velocity.estimates</span>(<span class="dt">emat =</span> object<span class="op">$</span>spliced, <span class="dt">nmat =</span> object<span class="op">$</span>unspliced, <span class="dt">kCells =</span> <span class="dv">25</span>, <span class="dt">fit.quantile =</span> <span class="fl">0.02</span>, 
+                                 <span class="dt">old.fit=</span><span class="kw">Tool</span>(object, <span class="dt">slot =</span> <span class="st">&quot;RunVelocity&quot;</span>),
+                                 <span class="dt">show.gene=</span>gene, <span class="dt">cell.emb=</span><span class="kw">Embeddings</span>(object, <span class="st">&quot;umap&quot;</span>), 
+                                 <span class="dt">cell.colors=</span>cell.colors)
+    }
+    <span class="co">#increment index</span>
+    index =<span class="st"> </span>index <span class="op">+</span><span class="st"> </span><span class="dv">1</span> 
+  }
+}</code></pre></div>
+<div id="markers-from-previous-rotation" class="section level4 tabset tabset-fade tabset-pills">
+<h4>1 - Markers from Previous Rotation</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Homeostatic Gene Set</span>
+ensemb =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ENSG00000168329.13&quot;</span>, <span class="st">&quot;ENSG00000171659.15&quot;</span>, <span class="st">&quot;ENSG00000169313.9&quot;</span>, <span class="st">&quot;ENSG00000181631.7&quot;</span>)
+names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CX3CR1&quot;</span>, <span class="st">&quot;GPR34&quot;</span>, <span class="st">&quot;P2RY12&quot;</span>, <span class="st">&quot;P2RY13&quot;</span>)
+<span class="kw">velocytoFeaturePlot</span>(bm_<span class="dv">2</span>, ensemb, names)</code></pre></div>
+<pre><code>## [1] &quot;Plot for ENSG00000168329.13 or CX3CR1&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Markers%20from%20Previous%20Rotation-1.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000171659.15 or GPR34&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000169313.9 or P2RY12&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000181631.7 or P2RY13&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#other (ie monocyte markers)</span>
+ensemb =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ENSG00000204472.13&quot;</span>, <span class="st">&quot;ENSG00000173372.17&quot;</span>, <span class="st">&quot;ENSG00000011600.11&quot;</span>)
+names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AIF1&quot;</span>,<span class="st">&quot;C1QA&quot;</span>,<span class="st">&quot;TYROBP&quot;</span>)
+<span class="kw">velocytoFeaturePlot</span>(bm_<span class="dv">2</span>, ensemb, names)</code></pre></div>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000204472.13 or AIF1&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000173372.17 or C1QA&quot;
+## [1] &quot;Plot for ENSG00000011600.11 or TYROBP&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Markers%20from%20Previous%20Rotation-2.png" width="4800" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Patir list </span>
+<span class="kw">head</span>(mergedIds)</code></pre></div>
+<pre><code>##   symbol                                description        biological_process
+## 1  ABCC4 ATP binding cassette subfamily C member 4     Metabolism/homeostasis
+## 2   ABI3                       ABI family member 3  Cytoskeletal organisation
+## 3   ACY3                            Aminoacylase 3     Metabolism/homeostasis
+## 4 ADAM28           ADAM metallopeptidase domain 28           Cell interaction
+## 5  ADAP2             ArfGAP with dual PH domains 2  Cytoskeletal organisation
+## 6  ADCY7                       Adenylate cyclase 7     Metabolism/homeostasis
+##              ensembl
+## 1 ENSG00000125257.15
+## 2  ENSG00000108798.9
+## 3  ENSG00000132744.8
+## 4 ENSG00000042980.12
+## 5 ENSG00000184060.11
+## 6 ENSG00000121281.12</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ensemb =<span class="st"> </span><span class="kw">c</span>(mergedIds[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="st">&quot;ensembl&quot;</span>])
+names =<span class="st"> </span><span class="kw">c</span>(mergedIds[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="st">&quot;symbol&quot;</span>])
+<span class="kw">velocytoFeaturePlot</span>(bm_<span class="dv">2</span>, ensemb, names)</code></pre></div>
+<pre><code>## [1] &quot;Plot for ENSG00000108798.9 or ABCC4&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Markers%20from%20Previous%20Rotation-3.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000132744.8 or ABI3&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000042980.12 or ACY3&quot;
+## [1] &quot;Plot for ENSG00000184060.11 or ADAM28&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Markers%20from%20Previous%20Rotation-4.png" width="4800" /></p>
+</div>
+<div id="homeostatic-markers" class="section level4 tabset tabset-fade tabset-pills">
+<h4>2 - Homeostatic Markers</h4>
+<p>We also looked at Homeostatic microglia markers as summarized in Figure 6 of <a href="https://www.sciencedirect.com/science/article/pii/S0092867417305780?via%3Dihub">Keren-Shaul et al 2017</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#homeostatic microglia</span>
+names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Hexb&quot;</span>, <span class="st">&quot;Cst3&quot;</span>, <span class="st">&quot;Cx3cr1&quot;</span>, <span class="st">&quot;Ctsd&quot;</span>,
+          <span class="st">&quot;Csf1r&quot;</span>, <span class="st">&quot;Ctss&quot;</span>, <span class="st">&quot;Sparc&quot;</span>, <span class="st">&quot;Tmsb4x&quot;</span>,
+          <span class="st">&quot;P2ry12&quot;</span>, <span class="st">&quot;C1qa&quot;</span>, <span class="st">&quot;C1qb&quot;</span>)
+ensemb =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ENSG00000049860.14&quot;</span>, <span class="st">&quot;ENSG00000101439.9&quot;</span>, <span class="st">&quot;ENSG00000168329.13&quot;</span>, <span class="st">&quot;ENSG00000117984.14&quot;</span>,
+          <span class="st">&quot;ENSG00000182578.13&quot;</span>, <span class="st">&quot;ENSG00000163131.11&quot;</span>, <span class="st">&quot;ENSG00000113140.11&quot;</span>, <span class="st">&quot;ENSG00000205542.11&quot;</span>,
+          <span class="st">&quot;ENSG00000169313.9&quot;</span>, <span class="st">&quot;ENSG00000173372.17&quot;</span>, <span class="st">&quot;ENSG00000173369.16&quot;</span>)
+<span class="kw">velocytoFeaturePlot</span>(bm_<span class="dv">2</span>, ensemb, names)</code></pre></div>
+<pre><code>## [1] &quot;Plot for ENSG00000049860.14 or Hexb&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Homeostatic%20Markers-1.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000101439.9 or Cst3&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Homeostatic%20Markers-2.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000168329.13 or Cx3cr1&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Homeostatic%20Markers-3.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000117984.14 or Ctsd&quot;
+## [1] &quot;Plot for ENSG00000182578.13 or Csf1r&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Homeostatic%20Markers-4.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000163131.11 or Ctss&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Homeostatic%20Markers-5.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000113140.11 or Sparc&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Homeostatic%20Markers-6.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000205542.11 or Tmsb4x&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Homeostatic%20Markers-7.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000169313.9 or P2ry12&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000173372.17 or C1qa&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000173369.16 or C1qb&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#grep &quot;Hexb\|Cst3\|Cx3cr1\|Ctsd\|Csf1r\|Ctss\|Sparc\|Tmsb4x\|P2ry12\|C1qa\|C1qb&quot; -iw ens.geneid.gencode.v30</span></code></pre></div>
+</div>
+<div id="stage-1-dam-markers" class="section level4 tabset tabset-fade tabset-pills">
+<h4>3 - Stage 1 DAM Markers</h4>
+<p>We also looked at DAM microglia markers as summarized in Figure 6 of <a href="https://www.sciencedirect.com/science/article/pii/S0092867417305780?via%3Dihub">Keren-Shaul et al 2017</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#stage 1 DAM</span>
+names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Cx3cr1&quot;</span>, <span class="st">&quot;P2ry12&quot;</span>, <span class="st">&quot;Tmem119&quot;</span>, 
+          <span class="st">&quot;Tyrobp&quot;</span>, <span class="st">&quot;Ctsb&quot;</span>, <span class="st">&quot;Ctsd&quot;</span>, 
+          <span class="st">&quot;Apoe&quot;</span>, <span class="st">&quot;B2m&quot;</span>, <span class="st">&quot;Fth1&quot;</span>, <span class="st">&quot;Lyz&quot;</span>)
+ensembl =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ENSG00000168329.13&quot;</span>, <span class="st">&quot;ENSG00000169313.9&quot;</span>, <span class="st">&quot;ENSG00000183160.9&quot;</span>, 
+          <span class="st">&quot;ENSG00000011600.11&quot;</span>, <span class="st">&quot;ENSG00000164733.21&quot;</span>, <span class="st">&quot;ENSG00000117984.14&quot;</span>, 
+          <span class="st">&quot;ENSG00000130203.10&quot;</span>, <span class="st">&quot;ENSG00000166710.19&quot;</span>, <span class="st">&quot;ENSG00000167996.16&quot;</span>, 
+          <span class="st">&quot;ENSG00000090382.6&quot;</span>)
+<span class="co">#Cx3cr1, P2ry12 downregulated in DAM; also present at homeostatic states</span>
+
+<span class="kw">velocytoFeaturePlot</span>(bm_<span class="dv">2</span>, ensemb, names)</code></pre></div>
+<pre><code>## [1] &quot;Plot for ENSG00000049860.14 or Cx3cr1&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%201%20DAM%20Markers-1.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000101439.9 or P2ry12&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%201%20DAM%20Markers-2.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000168329.13 or Tmem119&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%201%20DAM%20Markers-3.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000117984.14 or Tyrobp&quot;
+## [1] &quot;Plot for ENSG00000182578.13 or Ctsb&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%201%20DAM%20Markers-4.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000163131.11 or Ctsd&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%201%20DAM%20Markers-5.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000113140.11 or Apoe&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%201%20DAM%20Markers-6.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000205542.11 or B2m&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%201%20DAM%20Markers-7.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000169313.9 or Fth1&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000173372.17 or Lyz&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000173369.16 or NA&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#grep &quot;Cx3cr1\|P2ry12\|Tmem119\|Tyrobp\|Ctsb\|Ctsd\|Apoe\|B2m\|Fth1\|Lyz&quot; -iw ens.geneid.gencode.v30</span></code></pre></div>
+</div>
+<div id="stage-2-dam-markers" class="section level4 tabset tabset-fade tabset-pills">
+<h4>4 - Stage 2 DAM Markers</h4>
+<p>We also looked at DAM microglia markers as summarized in Figure 6 of <a href="https://www.sciencedirect.com/science/article/pii/S0092867417305780?via%3Dihub">Keren-Shaul et al 2017</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#stage 2 DAM</span>
+names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Trem2&quot;</span>, <span class="st">&quot;Axl&quot;</span>, <span class="st">&quot;Cst7&quot;</span>, <span class="st">&quot;Ctsl&quot;</span>, 
+          <span class="st">&quot;Lpl&quot;</span>, <span class="st">&quot;Cd9&quot;</span>, <span class="st">&quot;Csf1&quot;</span>, <span class="st">&quot;Itgax&quot;</span>, 
+          <span class="st">&quot;Clec7a&quot;</span>, <span class="st">&quot;Lilrb4&quot;</span>, <span class="st">&quot;Timp2&quot;</span>)
+ensembl =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ENSG00000095970.16&quot;</span>, <span class="st">&quot;ENSG00000167601.12&quot;</span>, <span class="st">&quot;ENSG00000077984.6&quot;</span>, 
+            <span class="st">&quot;ENSG00000135047.15&quot;</span>, <span class="st">&quot;ENSG00000175445.16&quot;</span>, <span class="st">&quot;ENSG00000010278.14&quot;</span>, 
+            <span class="st">&quot;ENSG00000184371.14&quot;</span>, <span class="st">&quot;ENSG00000140678.16&quot;</span>, <span class="st">&quot;ENSG00000172243.17&quot;</span>, 
+            <span class="st">&quot;ENSG00000186818.12&quot;</span>, <span class="st">&quot;ENSG00000035862.12&quot;</span>)
+
+<span class="kw">velocytoFeaturePlot</span>(bm_<span class="dv">2</span>, ensemb, names)</code></pre></div>
+<pre><code>## [1] &quot;Plot for ENSG00000049860.14 or Trem2&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%202%20DAM%20Markers-1.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000101439.9 or Axl&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%202%20DAM%20Markers-2.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000168329.13 or Cst7&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%202%20DAM%20Markers-3.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000117984.14 or Ctsl&quot;
+## [1] &quot;Plot for ENSG00000182578.13 or Lpl&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%202%20DAM%20Markers-4.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000163131.11 or Cd9&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%202%20DAM%20Markers-5.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000113140.11 or Csf1&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%202%20DAM%20Markers-6.png" width="4800" /></p>
+<pre><code>## [1] &quot;Plot for ENSG00000205542.11 or Itgax&quot;
+## calculating convolved matrices ... done</code></pre>
+<p><img src="velocyto_files/figure-html/Stage%202%20DAM%20Markers-7.png" width="4800" /></p>
+<pre><code>## [1] &quot;There are no unspliced reads for ENSG00000169313.9 or Clec7a&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000173372.17 or Lilrb4&quot;
+## [1] &quot;There are no unspliced reads for ENSG00000173369.16 or Timp2&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#grep &quot;Trem2\|Axl\|Cst7\|Ctsl\|Lpl\|Cd9\|Csf1\|Ccl6\|Itgax\|Clec7a\|Lilrb4\|Timp2&quot; -iw ens.geneid.gencode.v30</span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="interpreting-velocity-estimates" class="section level2">
+<h2>Interpreting Velocity Estimates</h2>
+<p>RNA velocity estimates are still relatively new so there is still a lot to learn and are some caveats.</p>
+<p>For example, <a href="https://nbisweden.github.io/single-cell_sib_scilifelab/session-trajectories/4_velocity.html">this tutorial</a> cites several potential concerns, including:</p>
+<ul>
+<li>velocity vectors are noisy, so you need to average over many cells (using 'kCells' parameter) while also trying not to overgeneralize</li>
+<li>high density regions highly influence the vectors of nearby low density regions (a similar problem exists with imputation methods)</li>
+<li>suggested upregulation of particular genes may be an increase in detected unspliced reads by chance or technical limitations</li>
+<li>there may be something akin to ‘overinflation of fold-changes’ just like in bulk data</li>
+<li>problems with the estimation of γ and low counts may bias gene level velocity estimations</li>
+</ul>
+<p>While we would like to interpret higher unspliced expression as an indication of upregulation, and higher spliced expression as an indication of downregulation, this <a href="https://jef.works/blog/2020/01/14/rna_velocity_analysis_tutorial_tips/">tutorial</a> suggests alternative explanations; higher unspliced expression may be associated with lower spliced expression because of nuclear retention. This is an important point - we must be careful and think critically for our biological interpretation of these single gene velocity estimates.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Save objects from intial run of velocyto (SCTransform method)</span>
+<span class="kw">save</span>(ldat, bm, <span class="dt">file =</span> <span class="st">&quot;velocytoRun1_scT.RData&quot;</span>)
+
+<span class="co">#Save objects from second run of velocyto (LogNorm method)</span>
+<span class="kw">save</span>(ldat, bm_<span class="dv">2</span>, <span class="dt">file =</span> <span class="st">&quot;velocytoRun2_log.RData&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R version 4.0.3 (2020-10-10)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: CentOS Linux 7 (Core)
+## 
+## Matrix products: default
+## BLAS/LAPACK: /hpc/packages/minerva-centos7/intel/parallel_studio_xe_2019/compilers_and_libraries_2019.0.117/linux/mkl/lib/intel64_lin/libmkl_gf_lp64.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] ggpubr_0.4.0         ggplot2_3.3.3        velocyto.R_0.6      
+## [4] Matrix_1.3-2         SeuratWrappers_0.3.0 SeuratObject_4.0.0  
+## [7] Seurat_4.0.0         BUSpaRse_1.7.1      
+## 
+## loaded via a namespace (and not attached):
+##   [1] utf8_1.1.4                  reticulate_1.18            
+##   [3] tidyselect_1.1.0            RSQLite_2.2.1              
+##   [5] AnnotationDbi_1.52.0        htmlwidgets_1.5.3          
+##   [7] grid_4.0.3                  BiocParallel_1.24.1        
+##   [9] Rtsne_0.15                  munsell_0.5.0              
+##  [11] codetools_0.2-18            ica_1.0-2                  
+##  [13] future_1.21.0               miniUI_0.1.1.1             
+##  [15] withr_2.4.1                 colorspace_2.0-0           
+##  [17] Biobase_2.50.0              highr_0.8                  
+##  [19] knitr_1.31                  stats4_4.0.3               
+##  [21] ROCR_1.0-11                 ggsignif_0.6.0             
+##  [23] tensor_1.5                  listenv_0.8.0              
+##  [25] labeling_0.4.2              MatrixGenerics_1.2.0       
+##  [27] GenomeInfoDbData_1.2.4      polyclip_1.10-0            
+##  [29] bit64_4.0.5                 farver_2.0.3               
+##  [31] parallelly_1.23.0           vctrs_0.3.6                
+##  [33] generics_0.1.0              xfun_0.21                  
+##  [35] BiocFileCache_1.14.0        R6_2.5.0                   
+##  [37] GenomeInfoDb_1.26.2         rsvd_1.0.3                 
+##  [39] AnnotationFilter_1.14.0     bitops_1.0-6               
+##  [41] spatstat.utils_2.1-0        cachem_1.0.4               
+##  [43] DelayedArray_0.16.0         assertthat_0.2.1           
+##  [45] promises_1.2.0.1            scales_1.1.1               
+##  [47] debugme_1.1.0               gtable_0.3.0               
+##  [49] globals_0.14.0              goftest_1.2-2              
+##  [51] ensembldb_2.14.0            rlang_0.4.10               
+##  [53] zeallot_0.1.0               splines_4.0.3              
+##  [55] rstatix_0.6.0               rtracklayer_1.50.0         
+##  [57] lazyeval_0.2.2              broom_0.7.3                
+##  [59] plyranges_1.10.0            BiocManager_1.30.10        
+##  [61] yaml_2.2.1                  reshape2_1.4.4             
+##  [63] abind_1.4-5                 backports_1.2.1            
+##  [65] GenomicFeatures_1.42.1      httpuv_1.5.5               
+##  [67] tools_4.0.3                 ellipsis_0.3.1             
+##  [69] jquerylib_0.1.3             RColorBrewer_1.1-2         
+##  [71] BiocGenerics_0.36.0         ggridges_0.5.3             
+##  [73] Rcpp_1.0.6                  plyr_1.8.6                 
+##  [75] progress_1.2.2              zlibbioc_1.36.0            
+##  [77] purrr_0.3.4                 RCurl_1.98-1.2             
+##  [79] prettyunits_1.1.1           rpart_4.1-15               
+##  [81] openssl_1.4.3               deldir_0.2-10              
+##  [83] pbapply_1.4-3               cowplot_1.1.1              
+##  [85] S4Vectors_0.28.1            zoo_1.8-8                  
+##  [87] haven_2.3.1                 SummarizedExperiment_1.20.0
+##  [89] ggrepel_0.9.1               cluster_2.1.0              
+##  [91] magrittr_2.0.1              data.table_1.14.0          
+##  [93] scattermore_0.7             openxlsx_4.2.3             
+##  [95] lmtest_0.9-38               RANN_2.6.1                 
+##  [97] pcaMethods_1.82.0           ProtGenerics_1.22.0        
+##  [99] fitdistrplus_1.1-3          matrixStats_0.58.0         
+## [101] hms_0.5.3                   patchwork_1.1.1            
+## [103] mime_0.10                   evaluate_0.14              
+## [105] xtable_1.8-4                XML_3.99-0.5               
+## [107] rio_0.5.16                  readxl_1.3.1               
+## [109] IRanges_2.24.1              gridExtra_2.3              
+## [111] compiler_4.0.3              biomaRt_2.46.0             
+## [113] tibble_3.1.0                KernSmooth_2.23-18         
+## [115] crayon_1.4.1                htmltools_0.5.1.1          
+## [117] mgcv_1.8-34                 later_1.1.0.1              
+## [119] tidyr_1.1.3                 DBI_1.1.1                  
+## [121] dbplyr_2.0.0                MASS_7.3-53.1              
+## [123] rappdirs_0.3.1              car_3.0-10                 
+## [125] parallel_4.0.3              igraph_1.2.6               
+## [127] forcats_0.5.0               GenomicRanges_1.42.0       
+## [129] pkgconfig_2.0.3             GenomicAlignments_1.26.0   
+## [131] foreign_0.8-80              plotly_4.9.3               
+## [133] xml2_1.3.2                  bslib_0.2.4                
+## [135] XVector_0.30.0              stringr_1.4.0              
+## [137] digest_0.6.27               sctransform_0.3.2          
+## [139] RcppAnnoy_0.0.18            spatstat.data_2.1-0        
+## [141] Biostrings_2.58.0           cellranger_1.1.0           
+## [143] rmarkdown_2.7               leiden_0.3.7               
+## [145] uwot_0.1.10                 curl_4.3                   
+## [147] shiny_1.6.0                 Rsamtools_2.6.0            
+## [149] lifecycle_1.0.0             nlme_3.1-152               
+## [151] jsonlite_1.7.2              carData_3.0-4              
+## [153] viridisLite_0.3.0           askpass_1.1                
+## [155] BSgenome_1.58.0             fansi_0.4.2                
+## [157] pillar_1.5.1                lattice_0.20-41            
+## [159] fastmap_1.1.0               httr_1.4.2                 
+## [161] survival_3.2-7              glue_1.4.2                 
+## [163] remotes_2.3.0               zip_2.1.1                  
+## [165] spatstat_1.64-1             png_0.1-7                  
+## [167] bit_4.0.4                   stringi_1.5.3              
+## [169] sass_0.3.1                  blob_1.2.1                 
+## [171] memoise_2.0.0               dplyr_1.0.5                
+## [173] irlba_2.3.3                 future.apply_1.7.0</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
